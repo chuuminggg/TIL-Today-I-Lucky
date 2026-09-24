@@ -1,6 +1,7 @@
+import Image from "next/image";
 import type { TarotCard } from "@/lib/tarot/cards";
 
-// 카드 이미지(RWS) 도입 전까지는 기호로 앞면을 그린다 — 이미지로 바꿀 때 이 파일만 수정
+// 앞면은 RWS(1909, 퍼블릭 도메인) 카드 이미지, 뒷면은 자체 디자인
 
 export function CardBack({ className = "" }: { className?: string }) {
   return (
@@ -9,6 +10,9 @@ export function CardBack({ className = "" }: { className?: string }) {
     </span>
   );
 }
+
+/** 카드 이미지 경로 — scripts/tarot/fetch-images.mjs가 slug 이름으로 만든다 */
+export const cardImage = (card: TarotCard) => `/tarot/rws/${card.slug}.webp`;
 
 export function CardFront({
   card,
@@ -22,14 +26,16 @@ export function CardFront({
   className?: string;
 }) {
   return (
-    <span
-      className={`flex flex-col items-center justify-between rounded-xl border-2 border-gold bg-card shadow-md ${
-        compact ? "p-1.5" : "p-3"
-      } ${className}`}
-    >
-      <span className={`text-muted ${compact ? "text-[0.55rem] leading-tight" : "text-xs"}`}>{card.nameEn}</span>
-      <span className={`${compact ? "text-3xl" : "text-6xl"} ${reversed ? "rotate-180" : ""}`}>{card.symbol}</span>
-      <span className={`text-center font-bold ${compact ? "text-[0.65rem] leading-tight" : "text-sm"}`}>{card.name}</span>
+    <span className={`overflow-hidden rounded-xl bg-card shadow-md ${className}`}>
+      <span className="relative block size-full">
+        <Image
+          src={cardImage(card)}
+          alt={`${card.name} (${card.nameEn})${reversed ? " 역방향" : ""}`}
+          fill
+          sizes={compact ? "72px" : "160px"}
+          className={`object-cover ${reversed ? "rotate-180" : ""}`}
+        />
+      </span>
     </span>
   );
 }

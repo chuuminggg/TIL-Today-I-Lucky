@@ -10,7 +10,6 @@ interface TopicLines {
 export interface SuitInfo {
   name: string;
   nameEn: string;
-  symbol: string;
   element: Element;
   theme: string; // 수트가 다루는 영역
   feeling: string; // 속마음 포지션에서 감정의 결
@@ -19,19 +18,19 @@ export interface SuitInfo {
 
 export const SUITS: Record<Suit, SuitInfo> = {
   wands: {
-    name: "완드", nameEn: "Wands", symbol: "🔥", element: "fire", theme: "열정과 일", feeling: "적극적인 끌림",
+    name: "완드", nameEn: "Wands", element: "fire", theme: "열정과 일", feeling: "적극적인 끌림",
     advice: { upright: "열정이 식기 전에 행동으로 옮겨 보세요.", reversed: "조급함을 내려놓고 에너지를 한곳에 모으세요." },
   },
   cups: {
-    name: "컵", nameEn: "Cups", symbol: "💧", element: "water", theme: "감정과 관계", feeling: "섬세한 감정",
+    name: "컵", nameEn: "Cups", element: "water", theme: "감정과 관계", feeling: "섬세한 감정",
     advice: { upright: "오늘은 머리보다 마음의 목소리를 따라가 보세요.", reversed: "감정에 휩쓸리기 전에 한 걸음 물러나 보세요." },
   },
   swords: {
-    name: "소드", nameEn: "Swords", symbol: "🗡️", element: "air", theme: "생각과 결단", feeling: "이성적인 판단",
+    name: "소드", nameEn: "Swords", element: "air", theme: "생각과 결단", feeling: "이성적인 판단",
     advice: { upright: "생각을 정리하고 분명하게 말하는 것이 힘이 됩니다.", reversed: "날 선 말보다 한 번 더 생각한 말을 고르세요." },
   },
   pentacles: {
-    name: "펜타클", nameEn: "Pentacles", symbol: "🪙", element: "earth", theme: "돈과 현실", feeling: "현실적인 고민",
+    name: "펜타클", nameEn: "Pentacles", element: "earth", theme: "돈과 현실", feeling: "현실적인 고민",
     advice: { upright: "눈앞의 작은 일부터 착실히 챙기세요.", reversed: "당장의 손익보다 길게 보고 판단하세요." },
   },
 };

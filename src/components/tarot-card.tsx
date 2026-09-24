@@ -23,7 +23,7 @@ export function TarotCard({ drawn, date }: { drawn: DrawnCard; date: string }) {
         {revealed ? "오늘 당신에게 온 카드예요." : "마음속으로 오늘 하루를 떠올리며 카드를 뒤집어 보세요."}
       </p>
 
-      <div className="flip-card mx-auto mt-4 h-64 w-40" data-revealed={revealed}>
+      <div className="flip-card mx-auto mt-4 aspect-[480/830] w-40" data-revealed={revealed}>
         <button
           type="button"
           onClick={reveal}

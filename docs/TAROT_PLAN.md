@@ -186,11 +186,12 @@ interface Reading {
 | 해상도 | 약 1110×1920 | 300×527 (고해상도 화면에선 흐림) |
 | 받는 방법 | 파일명 규칙이 있어 **스크립트로 자동 다운로드** | itch.io에서 **수동 클릭 다운로드** |
 | 파일명 | `RWS Tarot 00 Fool.jpg`, `Wands01.jpg`, `Cups01.jpg`, `Swords01.jpg`, `Pents01.jpg` … | 300장(변형 포함) — 78장을 직접 골라야 함 |
-| 용량 | 원본 합계 약 70MB → webp 변환 후 약 3MB | 3.2MB(jpg) |
+| 용량 | 원본 약 70MB → 960px 썸네일로 받아 webp 변환 후 약 7MB | 3.2MB(jpg) |
 
 **결정: Wikimedia Commons.** 해상도가 높아 카드 상세 페이지까지 한 소스로 해결되고, 다운로드·변환을 스크립트로 재현할 수 있다. 카드 뒷면은 지금의 CSS 디자인(`CardBack`)을 계속 쓴다.
 
-- 원본은 `assets/tarot/raw/`에 받고(git 제외), `sharp`(Next.js에 포함)로 **600px 폭 webp**로 변환해 `public/tarot/rws/{slug}.webp`에 둔다 (카드당 약 40KB).
+- ✅ `node scripts/tarot/fetch-images.mjs` — Commons 960px 썸네일을 `assets/tarot/raw/`에 받고(git 제외), `sharp`(Next.js에 포함)로 **480px 폭 webp(q70)** 로 변환해 `public/tarot/rws/{slug}.webp`에 둔다. 스캔의 종이 질감 때문에 카드당 약 90KB(총 6.9MB). 화면에는 `next/image`가 크기에 맞춰 다시 줄여서 보낸다(160px 카드 2배 밀도 기준 약 50KB).
+- 스캔마다 세로 길이가 조금씩 달라(480×805~846) 화면에서는 480:830 비율 틀에 `object-cover`로 맞춘다.
 - Commons API 호출 시 User-Agent에 프로젝트 이름을 넣는다 (Wikimedia 정책).
 - 크레딧: "Card images: Rider–Waite–Smith tarot (1909), illustrated by Pamela Colman Smith — public domain, via Wikimedia Commons".
 
@@ -245,7 +246,7 @@ src/components/tarot/             # ✅ tarot-app, card-fan, reading-result, car
 
 | 단계 | 산출물 | 완료 기준 |
 | --- | --- | --- |
-| **T1. 리소스** (다음) | Commons 다운로드·`fetch-images.mjs`·`public/tarot/rws/` 78장·`CREDITS.md`, 오늘의 타로 카드 앞면을 이모지 → 실제 이미지로 교체 | 이미지 존재 테스트 통과 |
+| **T1. 리소스** ✅ | Commons 다운로드·`fetch-images.mjs`·`public/tarot/rws/` 78장·`CREDITS.md`, 오늘의 타로 카드 앞면을 이모지 → 실제 이미지로 교체 | 이미지 존재 테스트 통과 |
 | **T2. 데이터 스키마** ✅ | `TarotCard` 확장, `data/*` 분리, 숫자·궁정·수트 fallback, 메이저 22장 상세 작성 | 스키마·중복·조합 테스트 통과, 기존 테스트 유지 |
 | **T3. 스프레드·뽑기** ✅ | `spreads.ts` 9종, `shuffleDeck`/`pickCards`, 시드 재현 | 같은 seed+picks → 같은 결과 테스트 |
 | **T4. 해석 엔진** ✅ | `interpret.ts` (카드별·전체 분석·예/아니오·요약), `/api/tarot/reading` | 스프레드별 스냅샷 테스트 |
