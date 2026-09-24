@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useMemo, useState } from "react";
 import { parseHistory, saveToHistory, useTarotHistoryRaw, type HistoryEntry } from "@/lib/tarot/history";
 import type { Reading, ReadingRequest } from "@/lib/tarot/interpret";
@@ -50,6 +51,14 @@ function TopicStep({ onSelect, onOpen }: { onSelect: (topic: Topic) => void; onO
           ))}
         </ul>
       </section>
+
+      <Link href="/tarot/cards" className="flex items-center justify-between rounded-xl border border-border bg-card px-4 py-3 text-sm">
+        <span>
+          <span className="font-medium">📖 타로 카드 사전</span>
+          <span className="block text-xs text-muted">78장 카드의 정·역방향 의미 살펴보기</span>
+        </span>
+        <span aria-hidden className="text-muted">→</span>
+      </Link>
 
       {history.length > 0 && (
         <section>

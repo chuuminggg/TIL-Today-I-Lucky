@@ -1,5 +1,6 @@
 import { josa } from "@/lib/josa";
 import { RANK_INFO, SUITS } from "./data/minor";
+import { ELEMENT_LABEL } from "./labels";
 import { pickCards, type DrawnCard } from "./draw";
 import { spreadById, type Lens, type SpreadPosition, type Topic } from "./spreads";
 import type { Element, Suit, TarotCard, YesNo } from "./types";
@@ -94,7 +95,7 @@ const SUIT_INSIGHT: Record<Suit, string> = {
   pentacles: "돈·일·몸 같은 현실적인 문제가 핵심이에요. 구체적인 계획이 도움이 됩니다.",
 };
 
-const ELEMENT_KO: Record<Element, string> = { fire: "🔥불", water: "💧물", air: "🌬️공기", earth: "🌱흙" };
+const elementText = (e: Element) => `${ELEMENT_LABEL[e].emoji}${ELEMENT_LABEL[e].name}`;
 
 /** 원소 상성(Elemental Dignities): 불↔물, 공기↔흙은 부딪히고 불↔공기, 물↔흙은 돕는다 */
 function elementRelation(a: Element, b: Element): "support" | "conflict" | "neutral" {
@@ -140,7 +141,7 @@ function analyze(drawn: DrawnCard[], positions: SpreadPosition[], spreadId: stri
       }
     }
     if (conflict && conflicts > support) {
-      insights.push({ kind: "element", text: `${josa(ELEMENT_KO[conflict[0]], "과", "와")} ${ELEMENT_KO[conflict[1]]}처럼 서로 부딪히는 기운이 이어져 있어요. 마음과 상황이 엇갈리기 쉬우니 한쪽으로 치우치지 않게 조율하세요.` });
+      insights.push({ kind: "element", text: `${josa(elementText(conflict[0]), "과", "와")} ${elementText(conflict[1])}처럼 서로 부딪히는 기운이 이어져 있어요. 마음과 상황이 엇갈리기 쉬우니 한쪽으로 치우치지 않게 조율하세요.` });
     } else if (support > conflicts && support >= total - 1) {
       insights.push({ kind: "element", text: "카드들의 기운이 서로 돕고 있어 흐름이 매끄러워요." });
     }

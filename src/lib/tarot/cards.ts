@@ -51,4 +51,13 @@ function buildMinors(): TarotCard[] {
 export const TAROT_DECK: TarotCard[] = [...buildMajors(), ...buildMinors()];
 
 const BY_ID = new Map(TAROT_DECK.map((card) => [card.id, card]));
+const BY_SLUG = new Map(TAROT_DECK.map((card) => [card.slug, card]));
 export const cardById = (id: string) => BY_ID.get(id);
+export const cardBySlug = (slug: string) => BY_SLUG.get(slug);
+
+/** 함께 나오면 의미가 강해지거나 부딪히는 카드 — 어느 쪽 카드에 적혀 있든 양방향으로 모은다 */
+export function relatedCards(card: TarotCard): { reinforce: TarotCard[]; oppose: TarotCard[] } {
+  const collect = (kind: "reinforce" | "oppose") =>
+    TAROT_DECK.filter((other) => other.id !== card.id && (card.combos[kind].includes(other.id) || other.combos[kind].includes(card.id)));
+  return { reinforce: collect("reinforce"), oppose: collect("oppose") };
+}

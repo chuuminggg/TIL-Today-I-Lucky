@@ -1,7 +1,7 @@
 import { existsSync } from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
-import { cardById, TAROT_DECK } from "./cards";
+import { cardById, cardBySlug, relatedCards, TAROT_DECK } from "./cards";
 
 describe("TAROT_DECK 데이터", () => {
   it("78장 (메이저 22 + 수트별 14), id·slug 중복 없음", () => {
@@ -74,5 +74,18 @@ describe("TAROT_DECK 데이터", () => {
   it("모든 카드에 이미지가 있다 (public/tarot/rws/{slug}.webp)", () => {
     const missing = TAROT_DECK.filter((c) => !existsSync(path.join(process.cwd(), "public/tarot/rws", `${c.slug}.webp`)));
     expect(missing.map((c) => c.slug)).toEqual([]);
+  });
+
+  it("slug로 카드를 찾는다", () => {
+    expect(cardBySlug("queen-of-cups")?.id).toBe("cups-13");
+    expect(cardBySlug("nope")).toBeUndefined();
+  });
+
+  it("관련 카드는 양방향으로 모인다", () => {
+    // 태양은 별을 강화로 적고, 컵 5는 태양을 대립으로 적었다
+    const sun = relatedCards(cardById("major-19")!);
+    expect(sun.reinforce.map((c) => c.id)).toContain("major-17");
+    expect(sun.oppose.map((c) => c.id)).toContain("cups-5");
+    expect(relatedCards(cardById("cups-5")!).oppose.map((c) => c.id)).toContain("major-19");
   });
 });

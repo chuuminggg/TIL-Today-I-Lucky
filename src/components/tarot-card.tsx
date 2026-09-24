@@ -51,6 +51,9 @@ export function TarotCard({ drawn, date }: { drawn: DrawnCard; date: string }) {
           </ul>
           <p className="mt-1 leading-relaxed">{drawn.side.meaning}</p>
           <p className="text-sm text-muted">💡 {drawn.side.advice}</p>
+          <Link href={`/tarot/cards/${card.slug}`} className="text-center text-xs text-muted underline underline-offset-2">
+            {card.name} 카드 의미 더 알아보기
+          </Link>
           <Link href="/tarot" className="mt-2 rounded-xl border border-accent py-2.5 text-center text-sm font-medium text-accent">
             고민이 있다면, 타로로 더 깊게 보기 →
           </Link>
