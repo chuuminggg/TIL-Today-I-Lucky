@@ -1,7 +1,7 @@
 # TIL — Today I Lucky 🍀
 
 매일 확인하는 오늘의 사주 운세와 타로 한 장, 그리고 주제별 타로 상세 운세(`/tarot`).
-개발 계획은 [PLAN.md](./PLAN.md), 타로 계획은 [docs/TAROT_PLAN.md](./docs/TAROT_PLAN.md) 참고.
+개발 계획은 [PLAN.md](./PLAN.md), 타로 계획은 [docs/TAROT_PLAN.md](./docs/TAROT_PLAN.md), 해석 다듬기(T8)는 [docs/TAROT_AI_PLAN.md](./docs/TAROT_AI_PLAN.md) 참고.
 
 ## 시작하기
 
