@@ -1,36 +1,12 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
+import { readStorage as read, subscribeStorage, writeStorage as write } from "@/lib/local-storage";
 import { birthProfileSchema, type BirthProfileInput } from "./schema";
 
 const KEY = "til:profile";
 const EVENT = "til:profile-change";
-
-function read(key: string): string | null {
-  try {
-    return window.localStorage.getItem(key);
-  } catch {
-    return null; // 사생활 보호 모드 등에서 storage 접근이 막힌 경우
-  }
-}
-
-function write(key: string, value: string | null) {
-  try {
-    if (value === null) window.localStorage.removeItem(key);
-    else window.localStorage.setItem(key, value);
-  } catch {
-    // 저장 실패 시에도 이번 방문은 동작하도록 무시
-  }
-}
-
-function subscribe(onChange: () => void) {
-  window.addEventListener("storage", onChange);
-  window.addEventListener(EVENT, onChange);
-  return () => {
-    window.removeEventListener("storage", onChange);
-    window.removeEventListener(EVENT, onChange);
-  };
-}
+const subscribe = subscribeStorage(EVENT);
 
 /**
  * 저장된 프로필 원문(JSON 문자열).

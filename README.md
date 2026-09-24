@@ -1,6 +1,7 @@
 # TIL — Today I Lucky 🍀
 
-매일 확인하는 오늘의 사주 운세와 타로 한 장. 개발 계획은 [PLAN.md](./PLAN.md) 참고.
+매일 확인하는 오늘의 사주 운세와 타로 한 장, 그리고 주제별 타로 상세 운세(`/tarot`).
+개발 계획은 [PLAN.md](./PLAN.md), 타로 계획은 [docs/TAROT_PLAN.md](./docs/TAROT_PLAN.md) 참고.
 
 ## 시작하기
 
@@ -24,14 +25,18 @@ npm run dev                  # http://localhost:3000
 src/
   app/
     page.tsx             홈 (요청마다 렌더링)
+    tarot/page.tsx       타로 상세 운세 (주제 → 스프레드 → 카드 고르기 → 해석)
     api/today/route.ts   POST: 오늘의 운세 + 행운 요소 + 타로
+    api/tarot/reading/   POST: 스프레드 해석 (seed + 고른 자리 → 결과, 재현 가능)
   components/            입력 폼, 운세·행운·타로 카드 (클라이언트)
+    tarot/               타로 상세 운세 흐름, 카드 펼치기, 결과 화면
   lib/
     calendar/            음력·윤달 → 양력, KST 날짜, 오늘의 일진
     saju/                saju-fortune 어댑터, 간지·십신·합충, 오늘 운세 점수, 행운 요소
     naming/              naming-house 어댑터
-    tarot/               78장 데이터, 시드 기반 뽑기
+    tarot/               78장 해석 데이터, 스프레드, 시드 기반 뽑기·셔플, 해석 엔진
     profile/             입력 스키마(zod), localStorage 저장
+    josa.ts              받침에 맞는 조사 붙이기
     today.ts             위 계산을 묶어 API 응답 생성
   types/k-skill.d.ts     saju-fortune / naming-house 타입 선언
 ```

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { connection } from "next/server";
 import { TodayApp } from "@/components/today-app";
 import { todayKST } from "@/lib/calendar/lunar";
@@ -12,11 +13,16 @@ export default async function Home() {
 
   return (
     <main className="mx-auto flex w-full max-w-md flex-1 flex-col gap-5 px-4 py-8">
-      <header>
-        <p className="text-sm text-muted">
-          {y}년 {m}월 {d}일 {weekday}요일
-        </p>
-        <h1 className="text-2xl font-bold">Today I Lucky 🍀</h1>
+      <header className="flex items-end justify-between">
+        <div>
+          <p className="text-sm text-muted">
+            {y}년 {m}월 {d}일 {weekday}요일
+          </p>
+          <h1 className="text-2xl font-bold">Today I Lucky 🍀</h1>
+        </div>
+        <Link href="/tarot" className="rounded-full bg-accent-soft px-3 py-1.5 text-sm font-medium text-accent">
+          🔮 타로 상세 운세
+        </Link>
       </header>
 
       <TodayApp />
