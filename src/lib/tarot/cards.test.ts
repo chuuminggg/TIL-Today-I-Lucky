@@ -33,8 +33,12 @@ describe("TAROT_DECK 데이터", () => {
     }
   });
 
-  it("메이저는 직접 작성한 해석이다", () => {
-    expect(TAROT_DECK.filter((c) => c.detailed).map((c) => c.arcana)).toEqual(Array(22).fill("major"));
+  it("카드마다 고유한 해석을 가진다 (문장 복붙 방지)", () => {
+    for (const field of ["meaning", "love", "feeling", "career", "money", "advice"] as const) {
+      const texts = TAROT_DECK.flatMap((c) => [c.upright[field], c.reversed[field]]);
+      const dupes = texts.filter((t, i) => texts.indexOf(t) !== i);
+      expect(dupes, field).toEqual([]);
+    }
   });
 
   it("조합 카드는 실제 존재하는 다른 카드를 가리킨다", () => {
@@ -44,6 +48,20 @@ describe("TAROT_DECK 데이터", () => {
         expect(id).not.toBe(card.id);
       }
     }
+  });
+
+  it("같은 두 카드가 강화이면서 대립일 수는 없다", () => {
+    const pair = (a: string, b: string) => [a, b].sort().join("+");
+    const reinforce = new Set(TAROT_DECK.flatMap((c) => c.combos.reinforce.map((id) => pair(c.id, id))));
+    const conflicts = TAROT_DECK.flatMap((c) => c.combos.oppose.map((id) => pair(c.id, id))).filter((p) => reinforce.has(p));
+    expect(conflicts).toEqual([]);
+  });
+
+  it("궁정 카드(11–14)만 인물 설명을 가진다", () => {
+    const withPerson = TAROT_DECK.filter((c) => c.person).map((c) => c.id);
+    const courts = TAROT_DECK.filter((c) => c.arcana === "minor" && c.number > 10).map((c) => c.id);
+    expect(withPerson).toEqual(courts);
+    expect(cardById("swords-14")?.person).toBe("논리적이고 원칙을 중시하는 권위자");
   });
 
   it("마이너 카드는 수트 원소를 따른다", () => {
