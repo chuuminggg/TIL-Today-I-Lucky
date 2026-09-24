@@ -60,7 +60,7 @@ describe("interpretReading — 전체 분석", () => {
 
   it("궁정 카드는 인물의 영향을 알려준다", () => {
     const r = read({ spreadId: "three-time", picks: slots("cups-13", "major-0", "wands-2") });
-    expect(r.insights.find((i) => i.kind === "court")?.text).toContain("섬세하고 품이 넓은 사람");
+    expect(r.insights.find((i) => i.kind === "court")?.text).toBe("컵 여왕 — 공감 능력이 뛰어나고 따뜻한 사람이 이 일에 영향을 줄 수 있어요.");
   });
 
   it("과거보다 미래가 좋으면 나아지는 흐름", () => {

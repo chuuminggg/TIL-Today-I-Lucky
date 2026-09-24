@@ -23,9 +23,9 @@ export interface TarotCard {
   suit?: Suit;
   number: number; // 메이저 0–21, 마이너 1–14 (11 시종, 12 기사, 13 여왕, 14 왕)
   element: Element; // 메이저는 대응 점성술, 마이너는 수트 기준
+  person?: string; // 궁정 카드(시종·기사·여왕·왕)가 나타내는 인물
   caution: string; // 장애물 포지션에서 정방향이어도 쓰는 "주의할 점"
   upright: CardSide;
   reversed: CardSide;
   combos: { reinforce: string[]; oppose: string[] }; // 함께 나오면 의미가 강해지는/부딪히는 카드 id
-  detailed: boolean; // 직접 작성한 해석이면 true, 수트·숫자 조합 문장이면 false
 }

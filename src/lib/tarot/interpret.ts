@@ -152,12 +152,13 @@ function analyze(drawn: DrawnCard[], positions: SpreadPosition[], spreadId: stri
     if (count >= 2) insights.push({ kind: "number", text: `${n === 1 ? "에이스" : `숫자 ${n} 카드`}가 ${count}장 — '${RANK_INFO[n - 1].theme}'의 흐름이 반복되고 있어요.` });
   }
 
-  const courts = drawn.filter((d) => d.card.arcana === "minor" && d.card.number > 10);
+  const courts = drawn.filter((d) => d.card.person);
   if (courts.length >= 2) {
     insights.push({ kind: "court", text: `궁정 카드가 ${courts.length}장이에요. 주변 사람들의 영향이 큰 상황이에요.` });
   } else if (courts.length === 1) {
-    const { card } = courts[0];
-    insights.push({ kind: "court", text: `${card.name} — ${RANK_INFO[card.number - 1].person}이 이 일에 영향을 줄 수 있어요.` });
+    const { card, reversed, side } = courts[0];
+    const shadow = reversed ? ` 다만 역방향이라 '${side.keywords.join("·")}' 같은 모습으로 나타날 수 있어요.` : "";
+    insights.push({ kind: "court", text: `${card.name} — ${josa(card.person!, "이", "가")} 이 일에 영향을 줄 수 있어요.${shadow}` });
   }
 
   if (total >= 3) {
