@@ -94,8 +94,9 @@
         │
 [Next.js API Routes]
   ├─ /api/saju/analyze    → saju-fortune.analyzeSaju
-  ├─ /api/fortune/today   → analyzeSaju 결과(일간·용신) × 오늘 일진 → 점수/행운요소 → LLM 풀이 (날짜별 캐시)
-  ├─ /api/tarot/draw      → 시드 기반 카드 선택 → 해석
+  ├─ /api/today           → 오늘의 운세 + 행운 요소 + 타로 한 장을 한 번에 반환 (✅ MVP, 규칙 기반)
+  │                         analyzeSaju(일간·용신) × 오늘 일진(십신·합충) → 점수 → (Phase 3) LLM 풀이·캐시
+  ├─ /api/tarot/draw      → 쓰리 카드·질문형 스프레드 (Phase 4)
   ├─ /api/compat          → saju-fortune.checkCompatibility
   ├─ /api/naming          → naming-house.recommendNames
   └─ /api/chat            → 사주 JSON 기반 대화형 Q&A (Claude tool use로 callSajuTool 연결, 스트리밍)
@@ -174,7 +175,7 @@ model DailyFortune {
 | --- | --- | --- |
 | **0. 셋업** | 2일 | Next.js 초기화, Tailwind/shadcn, lint/test(Vitest), CI |
 | **1. 엔진 연동** | 3–4일 | `saju-fortune`/`naming-house` 어댑터, 음력 변환, 일진 계산, 검증 테스트 |
-| **2. MVP** | 1–2주 | 온보딩, 오늘의 운세(규칙 기반), 오늘의 타로(원카드), 로컬 저장, 배포 |
+| **2. MVP** ✅ | 1–2주 | 온보딩, 오늘의 운세(규칙 기반), 오늘의 타로(원카드), 로컬 저장 — 배포·shadcn/ui는 미적용 |
 | **3. LLM 풀이** | 1주 | Claude 연동, 프롬프트 설계, 캐시, fallback 템플릿 |
 | **4. 상세 기능** | 2주 | 사주 상세 풀이, 대화형 Q&A, 쓰리카드 타로, 궁합 |
 | **5. 리텐션** | 1주 | 로그인, TIL 캘린더·스트릭, 공유 카드, 푸시/카톡 알림 |

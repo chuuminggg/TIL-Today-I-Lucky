@@ -22,12 +22,18 @@ npm run dev                  # http://localhost:3000
 
 ```
 src/
-  app/                 Next.js App Router
+  app/
+    page.tsx             홈 (요청마다 렌더링)
+    api/today/route.ts   POST: 오늘의 운세 + 행운 요소 + 타로
+  components/            입력 폼, 운세·행운·타로 카드 (클라이언트)
   lib/
-    calendar/lunar.ts  음력·윤달 → 양력 변환, KST 오늘 날짜
-    saju/adapter.ts    saju-fortune 래퍼 (사주 분석·궁합)
-    naming/adapter.ts  naming-house 래퍼 (작명 추천·채점)
-  types/k-skill.d.ts   saju-fortune / naming-house 타입 선언
+    calendar/            음력·윤달 → 양력, KST 날짜, 오늘의 일진
+    saju/                saju-fortune 어댑터, 간지·십신·합충, 오늘 운세 점수, 행운 요소
+    naming/              naming-house 어댑터
+    tarot/               78장 데이터, 시드 기반 뽑기
+    profile/             입력 스키마(zod), localStorage 저장
+    today.ts             위 계산을 묶어 API 응답 생성
+  types/k-skill.d.ts     saju-fortune / naming-house 타입 선언
 ```
 
 사주·작명 계산은 [k-skill](https://github.com/NomaDamas/k-skill)의 `saju-fortune`, `naming-house` 패키지를 사용합니다.
