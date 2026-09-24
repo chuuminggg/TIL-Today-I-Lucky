@@ -27,6 +27,7 @@ src/
   app/
     page.tsx             홈 (요청마다 렌더링)
     tarot/page.tsx       타로 상세 운세 (주제 → 스프레드 → 카드 고르기 → 해석)
+    tarot/cards/         카드 사전 — 목록 + 78장 상세(빌드 때 정적 생성)
     api/today/route.ts   POST: 오늘의 운세 + 행운 요소 + 타로
     api/tarot/reading/   POST: 스프레드 해석 (seed + 고른 자리 → 결과, 재현 가능)
   components/            입력 폼, 운세·행운·타로 카드 (클라이언트)

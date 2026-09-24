@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { direction, type Reading } from "@/lib/tarot/interpret";
 import { buildAiPrompt } from "@/lib/tarot/prompt";
@@ -87,6 +88,9 @@ export function ReadingResult({
             ))}
           </ul>
           <p className="mt-2 leading-relaxed">{c.text}</p>
+          <Link href={`/tarot/cards/${c.card.slug}`} className="mt-2 inline-block text-xs text-muted underline underline-offset-2">
+            {c.card.name} 카드 자세히 보기
+          </Link>
         </section>
       ))}
 
