@@ -9,8 +9,9 @@ const notoSansKr = Noto_Sans_KR({
 });
 
 export const metadata: Metadata = {
-  // 공유 미리보기(OG) 이미지의 절대 주소 기준 — 배포 주소를 환경 변수로 지정
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
+  // 공유 미리보기(OG) 이미지의 절대 주소 기준. 지정하지 않으면 Next.js가 Vercel 배포 주소
+  // (VERCEL_PROJECT_PRODUCTION_URL, 미리보기는 VERCEL_BRANCH_URL)를 쓴다 — 커스텀 도메인일 때만 지정
+  metadataBase: process.env.NEXT_PUBLIC_SITE_URL ? new URL(process.env.NEXT_PUBLIC_SITE_URL) : undefined,
   title: "TIL — Today I Lucky",
   description: "매일 확인하는 오늘의 사주 운세와 타로 한 장",
 };
