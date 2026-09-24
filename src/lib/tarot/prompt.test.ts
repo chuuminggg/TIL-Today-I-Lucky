@@ -25,6 +25,12 @@ describe("buildAiPrompt", () => {
     expect(prompt).toContain("**실천 조언**");
   });
 
+  it("전체 판에는 이야기 문단을, 짧은 판에는 빼고 담는다", () => {
+    const r = reading();
+    expect(buildAiPrompt(r)).toContain(r.story);
+    expect(buildAiPrompt(r, { compact: true })).not.toContain(r.story);
+  });
+
   it("예/아니오 판정과 질문 없음을 반영한다", () => {
     const r = reading({ topic: "yesno", question: undefined, spreadId: "yes-no", picks: [1, 2, 3] });
     const prompt = buildAiPrompt(r);

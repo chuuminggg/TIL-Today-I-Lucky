@@ -95,8 +95,9 @@ export function ReadingResult({
               </p>
             )}
             <div>
-              <h3 className="font-bold">{reading.summary.title}</h3>
-              <p className="mt-1 leading-relaxed">{reading.summary.text}</p>
+              <h3 className="font-bold">📜 카드가 들려주는 이야기</h3>
+              <p className="mt-1 leading-relaxed">{reading.story}</p>
+              <p className="mt-2 text-xs text-muted">결론 카드 — {reading.summary.title}</p>
             </div>
             {reading.insights.length > 0 && (
               <ul className="flex flex-col gap-2 border-t border-border pt-3 text-sm leading-relaxed">
