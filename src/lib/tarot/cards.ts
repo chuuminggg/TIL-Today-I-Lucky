@@ -1,156 +1,80 @@
-export type Suit = "wands" | "cups" | "swords" | "pentacles";
+import { MAJORS } from "./data/major";
+import { MINOR_KEYWORDS, MINOR_YES_NO_OVERRIDES, RANK_INFO, RANKS, RANKS_EN, SUITS } from "./data/minor";
+import type { CardSide, Suit, TarotCard, YesNo } from "./types";
 
-export interface TarotCard {
-  id: string;
-  name: string; // 한국어 이름
-  nameEn: string;
-  arcana: "major" | "minor";
-  suit?: Suit;
-  symbol: string; // 카드 앞면에 그릴 기호
-  upright: { keywords: string[]; meaning: string };
-  reversed: { keywords: string[]; meaning: string };
-  advice: string;
-}
-
-type MajorSpec = [nameEn: string, name: string, symbol: string, up: string[], upMeaning: string, rev: string[], revMeaning: string, advice: string];
-
-const MAJORS: MajorSpec[] = [
-  ["The Fool", "바보", "🌬️", ["새로운 시작", "자유", "모험"], "두려움 없이 첫발을 내딛기 좋은 때입니다. 계획보다 호기심을 따라가 보세요.", ["무모함", "망설임"], "준비 없이 뛰어들거나, 반대로 너무 망설여 기회를 놓칠 수 있습니다.", "가벼운 마음으로 새로운 것을 하나 시도해 보세요."],
-  ["The Magician", "마법사", "✨", ["창조력", "실행력", "재능"], "필요한 도구는 이미 손에 있습니다. 생각을 행동으로 옮기면 결과가 따라옵니다.", ["속임수", "산만함"], "재능이 흩어지거나 말만 앞설 수 있습니다. 한 가지에 집중하세요.", "머릿속 아이디어 하나를 오늘 바로 실행해 보세요."],
-  ["The High Priestess", "여사제", "🌙", ["직관", "내면의 지혜", "비밀"], "겉으로 드러난 것보다 마음속 느낌이 답을 알고 있습니다.", ["직관 무시", "숨은 정보"], "중요한 정보가 가려져 있거나 내 느낌을 외면하고 있을 수 있습니다.", "결정 전에 잠시 조용히 마음의 소리를 들어 보세요."],
-  ["The Empress", "여황제", "🌸", ["풍요", "돌봄", "결실"], "애정과 풍요가 넘치는 흐름입니다. 가꾼 만큼 거두게 됩니다.", ["과잉보호", "정체"], "남을 챙기느라 나를 소홀히 하거나 성장이 더딜 수 있습니다.", "나를 위한 작은 선물이나 휴식을 챙기세요."],
-  ["The Emperor", "황제", "👑", ["안정", "리더십", "질서"], "원칙과 구조를 세우면 흔들림 없이 나아갈 수 있습니다.", ["독단", "경직"], "지나친 통제나 고집이 관계를 딱딱하게 만들 수 있습니다.", "오늘 할 일의 우선순위를 명확히 정해 보세요."],
-  ["The Hierophant", "교황", "🗝️", ["전통", "가르침", "신뢰"], "검증된 방법과 선배의 조언이 도움이 되는 때입니다.", ["틀 깨기", "형식주의"], "관습에 얽매이거나, 반대로 규칙을 무시해 문제가 생길 수 있습니다.", "믿을 만한 사람에게 조언을 구해 보세요."],
-  ["The Lovers", "연인", "💞", ["사랑", "조화", "선택"], "마음이 통하는 관계와 중요한 선택이 함께 찾아옵니다.", ["불화", "우유부단"], "관계의 균형이 흔들리거나 선택을 미루고 있을 수 있습니다.", "마음이 진짜 원하는 쪽을 솔직하게 선택하세요."],
-  ["The Chariot", "전차", "🏇", ["전진", "의지", "승리"], "강한 의지로 밀고 나가면 목표에 닿습니다.", ["방향 상실", "통제 불능"], "힘이 엇갈리며 제자리걸음을 할 수 있습니다. 방향부터 점검하세요.", "목표 하나를 정하고 끝까지 밀어붙여 보세요."],
-  ["Strength", "힘", "🦁", ["용기", "인내", "부드러운 힘"], "부드럽지만 단단한 마음이 상황을 다스립니다.", ["자신감 부족", "감정 폭발"], "스스로를 의심하거나 감정을 누르다 터질 수 있습니다.", "화가 날 때 한 번 숨을 고르고 부드럽게 말해 보세요."],
-  ["The Hermit", "은둔자", "🏮", ["성찰", "고독", "탐구"], "혼자만의 시간이 답을 찾게 해 줍니다.", ["고립", "외로움"], "지나치게 혼자 틀어박혀 도움의 손길을 놓칠 수 있습니다.", "잠깐이라도 혼자 걸으며 생각을 정리해 보세요."],
-  ["Wheel of Fortune", "운명의 수레바퀴", "🎡", ["전환점", "행운", "흐름"], "흐름이 바뀌는 때입니다. 찾아온 기회를 잡으세요.", ["불운", "저항"], "뜻대로 되지 않는 시기지만, 수레바퀴는 다시 돕니다.", "변화를 거스르지 말고 흐름에 올라타 보세요."],
-  ["Justice", "정의", "⚖️", ["공정", "균형", "책임"], "뿌린 대로 거두는 때입니다. 공정한 판단이 좋은 결과로 이어집니다.", ["불공정", "책임 회피"], "치우친 판단이나 미룬 책임이 문제로 돌아올 수 있습니다.", "결정을 내리기 전에 양쪽 입장을 공평하게 따져 보세요."],
-  ["The Hanged Man", "매달린 사람", "🙃", ["관점 전환", "기다림", "내려놓기"], "잠시 멈추고 다른 각도에서 보면 새로운 답이 보입니다.", ["헛된 희생", "지연"], "의미 없는 기다림이나 희생이 이어지고 있을 수 있습니다.", "막힌 문제를 정반대 입장에서 바라보세요."],
-  ["Death", "죽음", "🦋", ["끝과 시작", "변화", "정리"], "하나가 끝나야 새것이 옵니다. 정리는 새 출발의 신호입니다.", ["변화 거부", "미련"], "끝난 것을 붙잡고 있어 다음 단계로 못 가고 있을 수 있습니다.", "더 이상 필요 없는 것 하나를 정리해 보세요."],
-  ["Temperance", "절제", "🍶", ["균형", "조화", "절제"], "서두르지 않고 균형을 맞출 때 가장 좋은 결과가 나옵니다.", ["불균형", "과잉"], "한쪽으로 치우치거나 무리하고 있을 수 있습니다.", "오늘은 무엇이든 적당히, 중간을 지켜 보세요."],
-  ["The Devil", "악마", "⛓️", ["유혹", "집착", "욕망"], "달콤한 유혹이나 습관에 묶여 있지 않은지 살펴볼 때입니다.", ["해방", "벗어남"], "나를 묶던 것에서 벗어날 힘이 생기고 있습니다.", "끊고 싶던 습관 하나를 오늘만이라도 멈춰 보세요."],
-  ["The Tower", "탑", "⚡", ["급변", "깨달음", "붕괴"], "예상치 못한 변화가 오지만, 무너진 자리에 더 단단한 것을 세울 수 있습니다.", ["변화 회피", "작은 충격"], "피하던 문제가 조금씩 드러나고 있습니다. 미리 대비하세요.", "불안한 부분을 미리 점검하고 대비책을 세워 두세요."],
-  ["The Star", "별", "⭐", ["희망", "치유", "영감"], "지친 마음이 회복되고 희망이 다시 빛나는 때입니다.", ["실망", "의욕 저하"], "기대가 꺾여 의욕이 떨어질 수 있지만, 빛은 아직 꺼지지 않았습니다.", "이루고 싶은 소원을 하나 적어 보세요."],
-  ["The Moon", "달", "🌕", ["불안", "무의식", "환상"], "모든 것이 선명하지 않은 때입니다. 불안은 확인으로 걷어 내세요.", ["혼란 해소", "진실 드러남"], "흐릿하던 상황이 점점 분명해지고 있습니다.", "막연한 걱정은 사실 확인으로 하나씩 지워 보세요."],
-  ["The Sun", "태양", "☀️", ["성공", "기쁨", "활력"], "밝은 에너지가 가득한 날입니다. 자신 있게 드러내세요.", ["일시적 그늘", "과신"], "기쁨이 잠시 가려질 수 있지만 큰 흐름은 밝습니다.", "오늘의 좋은 일을 주변과 나눠 보세요."],
-  ["Judgement", "심판", "📯", ["부활", "각성", "재평가"], "지난 일을 돌아보고 새롭게 일어설 때입니다.", ["자기 비판", "미루기"], "지나친 자책이나 결정을 미루는 태도가 발목을 잡을 수 있습니다.", "지난 경험에서 배운 점 하나를 적어 보세요."],
-  ["The World", "세계", "🌍", ["완성", "성취", "통합"], "하나의 여정이 아름답게 마무리됩니다. 성취를 즐기세요.", ["미완성", "마무리 부족"], "끝이 보이지만 마지막 한 걸음이 남아 있습니다.", "진행 중인 일 하나를 오늘 끝까지 마무리해 보세요."],
-];
-
-const SUITS: Record<Suit, { name: string; symbol: string; theme: string; advice: string }> = {
-  wands: { name: "완드", symbol: "🔥", theme: "열정과 일", advice: "열정이 식기 전에 행동으로 옮겨 보세요." },
-  cups: { name: "컵", symbol: "💧", theme: "감정과 관계", advice: "오늘은 머리보다 마음의 목소리를 따라가 보세요." },
-  swords: { name: "소드", symbol: "🗡️", theme: "생각과 결단", advice: "생각을 정리하고 분명하게 말하는 것이 힘이 됩니다." },
-  pentacles: { name: "펜타클", symbol: "🪙", theme: "돈과 현실", advice: "눈앞의 작은 일부터 착실히 챙기세요." },
-};
-
-const RANKS = ["에이스", "2", "3", "4", "5", "6", "7", "8", "9", "10", "시종", "기사", "여왕", "왕"];
-const RANKS_EN = ["Ace", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Page", "Knight", "Queen", "King"];
-
-// 수트별 [정방향 키워드, 역방향 키워드] — 에이스부터 왕까지
-const MINOR_KEYWORDS: Record<Suit, Array<[string[], string[]]>> = {
-  wands: [
-    [["새로운 열정", "영감"], ["의욕 저하", "지연"]],
-    [["계획", "결단"], ["두려움", "계획 부족"]],
-    [["확장", "전망"], ["장애물", "좌절"]],
-    [["축하", "안정"], ["불안정", "갈등"]],
-    [["경쟁", "마찰"], ["갈등 회피", "화해"]],
-    [["승리", "인정"], ["자만", "인정받지 못함"]],
-    [["방어", "소신"], ["지침", "포기"]],
-    [["빠른 진행", "소식"], ["지연", "조급함"]],
-    [["끈기", "경계"], ["피로", "방어적 태도"]],
-    [["책임", "부담"], ["짐 내려놓기", "과부하"]],
-    [["호기심", "새 소식"], ["산만함", "미숙함"]],
-    [["모험", "추진력"], ["성급함", "무모함"]],
-    [["자신감", "매력"], ["질투", "변덕"]],
-    [["비전", "리더십"], ["독선", "성급한 판단"]],
-  ],
-  cups: [
-    [["새로운 감정", "사랑의 시작"], ["감정 억제", "공허함"]],
-    [["교감", "파트너십"], ["불균형", "오해"]],
-    [["우정", "축하"], ["과음·과식", "소외"]],
-    [["권태", "재평가"], ["새로운 관심", "기회 인식"]],
-    [["상실감", "아쉬움"], ["회복", "받아들임"]],
-    [["추억", "순수함"], ["과거 집착", "성장"]],
-    [["선택지", "상상"], ["현실 직시", "혼란 정리"]],
-    [["떠남", "새 방향"], ["미련", "두려움"]],
-    [["만족", "소원 성취"], ["욕심", "허탈함"]],
-    [["행복", "화목"], ["가정 불화", "기대 불일치"]],
-    [["설렘", "감수성"], ["감정 기복", "미성숙"]],
-    [["로맨스", "제안"], ["변덕", "비현실적 기대"]],
-    [["공감", "배려"], ["감정 과잉", "의존"]],
-    [["감정 조절", "너그러움"], ["감정 조종", "냉담"]],
-  ],
-  swords: [
-    [["명확함", "돌파"], ["혼란", "잘못된 판단"]],
-    [["교착", "선택 보류"], ["결정", "정보 과잉"]],
-    [["상심", "아픔"], ["회복", "용서"]],
-    [["휴식", "재충전"], ["불안", "번아웃"]],
-    [["갈등", "승부"], ["화해", "후회"]],
-    [["전환", "이동"], ["정체", "미해결"]],
-    [["전략", "눈치"], ["들킴", "양심"]],
-    [["제약", "스스로 만든 벽"], ["해방", "새 관점"]],
-    [["걱정", "불면"], ["희망", "걱정 해소"]],
-    [["끝", "바닥"], ["회복", "재기"]],
-    [["호기심", "관찰"], ["험담", "성급한 말"]],
-    [["돌진", "야망"], ["성급함", "무계획"]],
-    [["독립", "명료함"], ["냉정함", "비판적 태도"]],
-    [["논리", "권위"], ["권력 남용", "냉혹함"]],
-  ],
-  pentacles: [
-    [["새로운 기회", "재물의 씨앗"], ["기회 상실", "계획 부족"]],
-    [["균형", "유연함"], ["과부하", "우선순위 혼란"]],
-    [["협업", "기술"], ["팀워크 부족", "평범함"]],
-    [["절약", "안정"], ["인색함", "집착"]],
-    [["어려움", "결핍"], ["회복", "도움의 손길"]],
-    [["나눔", "후원"], ["불공평", "빚"]],
-    [["인내", "장기 투자"], ["조급함", "성과 부족"]],
-    [["숙련", "성실"], ["완벽주의", "권태"]],
-    [["자립", "풍요"], ["과소비", "의존"]],
-    [["유산", "가족의 안정"], ["재정 문제", "가족 갈등"]],
-    [["배움", "기회"], ["게으름", "집중력 부족"]],
-    [["꾸준함", "책임감"], ["지루함", "정체"]],
-    [["살림", "실용성"], ["일과 삶의 불균형", "걱정"]],
-    [["성공", "풍요"], ["물질 집착", "고집"]],
-  ],
-};
+export type { CardSide, Element, Suit, TarotCard, YesNo } from "./types";
 
 function buildMajors(): TarotCard[] {
-  return MAJORS.map(([nameEn, name, symbol, up, upMeaning, rev, revMeaning, advice], index) => ({
+  return MAJORS.map((spec, index) => ({
     id: `major-${index}`,
-    name: `${index}. ${name}`,
-    nameEn,
+    slug: spec.slug,
+    name: `${index}. ${spec.name}`,
+    nameEn: spec.nameEn,
     arcana: "major",
-    symbol,
-    upright: { keywords: up, meaning: upMeaning },
-    reversed: { keywords: rev, meaning: revMeaning },
-    advice,
+    number: index,
+    element: spec.element,
+    symbol: spec.symbol,
+    caution: spec.caution,
+    upright: spec.upright,
+    reversed: spec.reversed,
+    combos: spec.combos,
+    detailed: true,
   }));
 }
 
+// 역방향은 정방향의 판정을 한 단계 낮춘다 (단, 부정적 카드의 역방향은 회복의 의미라 "애매"로)
+const REVERSED_YES_NO: Record<YesNo, YesNo> = { yes: "no", maybe: "no", no: "maybe" };
+
+const quoted = (keywords: string[]) => `'${keywords.join("·")}'`;
+
+/** 마이너 카드는 수트(영역) × 숫자·궁정(단계) × 키워드를 조합해 해석한다 */
 function buildMinors(): TarotCard[] {
   return (Object.keys(SUITS) as Suit[]).flatMap((suit) => {
     const info = SUITS[suit];
-    return MINOR_KEYWORDS[suit].map(([up, rev], rank) => ({
-      id: `${suit}-${rank + 1}`,
-      name: `${info.name} ${RANKS[rank]}`,
-      nameEn: `${RANKS_EN[rank]} of ${suit[0].toUpperCase()}${suit.slice(1)}`,
-      arcana: "minor" as const,
-      suit,
-      symbol: info.symbol,
-      upright: {
-        keywords: up,
-        meaning: `${info.theme}의 영역에서 '${up.join("', '")}'의 기운이 흐릅니다.`,
-      },
-      reversed: {
-        keywords: rev,
-        meaning: `${info.theme}의 영역에서 '${rev.join("', '")}'에 주의가 필요합니다.`,
-      },
-      advice: info.advice,
-    }));
+    return MINOR_KEYWORDS[suit].map(([upKeywords, revKeywords], index): TarotCard => {
+      const number = index + 1;
+      const id = `${suit}-${number}`;
+      const rank = RANK_INFO[index];
+      const uprightYesNo = MINOR_YES_NO_OVERRIDES[id] ?? rank.yesNo;
+      const persona = rank.person ? `상대는 ${rank.person}의 모습으로 다가오고 있어요. ` : "";
+
+      const side = (keywords: string[], dir: "upright" | "reversed", yesNo: YesNo): CardSide => {
+        const lines = rank[dir];
+        const mood = `${quoted(keywords)}의 기운 속에서`;
+        return {
+          keywords,
+          meaning: `${info.theme}의 영역에서 ${quoted(keywords)}의 기운이 흐릅니다. ${lines.general}`,
+          love: `${mood} ${lines.love}`,
+          feeling: `${persona}마음속에는 ${info.feeling}과 함께 ${quoted(keywords)}의 감정이 자리하고 있어요.`,
+          career: `${mood} ${lines.career}`,
+          money: `${mood} ${lines.money}`,
+          advice: info.advice[dir],
+          yesNo,
+        };
+      };
+
+      return {
+        id,
+        slug: `${RANKS_EN[index].toLowerCase()}-of-${suit}`,
+        name: `${info.name} ${RANKS[index]}`,
+        nameEn: `${RANKS_EN[index]} of ${info.nameEn}`,
+        arcana: "minor",
+        suit,
+        number,
+        element: info.element,
+        symbol: info.symbol,
+        caution: `${quoted(revKeywords)} 쪽으로 기울지 않도록 주의하세요.`,
+        upright: side(upKeywords, "upright", uprightYesNo),
+        reversed: side(revKeywords, "reversed", REVERSED_YES_NO[uprightYesNo]),
+        combos: { reinforce: [], oppose: [] },
+        detailed: false,
+      };
+    });
   });
 }
 
+/** 순서를 바꾸면 오늘의 타로(시드 뽑기) 결과가 바뀌므로 메이저 → 완드 → 컵 → 소드 → 펜타클 순서를 유지한다 */
 export const TAROT_DECK: TarotCard[] = [...buildMajors(), ...buildMinors()];
+
+const BY_ID = new Map(TAROT_DECK.map((card) => [card.id, card]));
+export const cardById = (id: string) => BY_ID.get(id);

@@ -64,3 +64,27 @@ body {
     transition: none;
   }
 }
+
+/* 타로 셔플 — 카드 다섯 장이 번갈아 좌우로 빠졌다 들어간다 */
+@keyframes shuffle-out {
+  0%,
+  100% {
+    transform: translateX(0) rotate(0);
+  }
+  50% {
+    transform: translateX(var(--shuffle-x)) rotate(var(--shuffle-r));
+  }
+}
+.shuffle-card {
+  animation: shuffle-out 0.9s ease-in-out infinite;
+}
+.shuffle-card:nth-child(1) { --shuffle-x: -70%; --shuffle-r: -8deg; animation-delay: 0s; }
+.shuffle-card:nth-child(2) { --shuffle-x: 70%; --shuffle-r: 8deg; animation-delay: 0.15s; }
+.shuffle-card:nth-child(3) { --shuffle-x: -45%; --shuffle-r: -4deg; animation-delay: 0.3s; }
+.shuffle-card:nth-child(4) { --shuffle-x: 45%; --shuffle-r: 4deg; animation-delay: 0.45s; }
+.shuffle-card:nth-child(5) { --shuffle-x: 0; --shuffle-r: 0; animation: none; }
+@media (prefers-reduced-motion: reduce) {
+  .shuffle-card {
+    animation: none;
+  }
+}
