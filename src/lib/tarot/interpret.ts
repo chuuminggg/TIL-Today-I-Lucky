@@ -1,6 +1,8 @@
 import { josa } from "@/lib/josa";
 import { RANK_INFO, SUITS } from "./data/minor";
 import { ELEMENT_LABEL } from "./labels";
+import { buildStory } from "./narrative";
+import { cardScore } from "./scoring";
 import { pickCards, type DrawnCard } from "./draw";
 import { spreadById, type Lens, type SpreadPosition, type Topic } from "./spreads";
 import type { Element, Suit, TarotCard, YesNo } from "./types";
@@ -46,6 +48,7 @@ export interface Reading {
   cards: ReadingCard[];
   insights: Insight[];
   verdict?: Verdict;
+  story: string; // 카드들을 이어서 들려주는 한 문단
   summary: { title: string; text: string };
   advice: string;
 }
@@ -85,8 +88,7 @@ function cardText(lens: Lens, topic: Topic, { card, reversed, side }: DrawnCard)
   }
 }
 
-const YES_NO_SCORE: Record<YesNo, number> = { yes: 1, maybe: 0, no: -1 };
-const score = (d: DrawnCard) => YES_NO_SCORE[d.side.yesNo] - (d.reversed ? 0.25 : 0);
+const score = (d: DrawnCard) => cardScore(d.card, d.reversed);
 
 const SUIT_INSIGHT: Record<Suit, string> = {
   wands: "열정과 행동의 기운이 강해요. 망설이기보다 움직일 때예요.",
@@ -263,6 +265,7 @@ export function interpretReading(request: ReadingRequest): Reading {
     allowReversed,
     cards,
     insights: analyze(drawn, positions, spread.id),
+    story: buildStory(spread.id, cards, request.seed),
     verdict: wantsVerdict ? verdictOf(drawn, positions) : undefined,
     summary: {
       title: `${key.position.label} · ${key.card.name} ${direction(key.reversed)}`,
