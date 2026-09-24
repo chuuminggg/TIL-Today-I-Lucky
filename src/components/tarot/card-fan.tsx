@@ -31,7 +31,7 @@ export function CardFan({ spread, onDone }: { spread: Spread; onDone: (picks: nu
   if (shuffling) {
     return (
       <div className="flex flex-col items-center gap-6 py-6">
-        <div className="shuffle-stack relative h-40 w-24" aria-hidden>
+        <div className="shuffle-stack relative aspect-[480/830] w-24" aria-hidden>
           {[0, 1, 2, 3, 4].map((i) => (
             <CardBack key={i} className="shuffle-card absolute inset-0 text-2xl" />
           ))}
@@ -76,7 +76,7 @@ export function CardFan({ spread, onDone }: { spread: Spread; onDone: (picks: nu
                   disabled={!picked && picks.length >= need}
                   aria-pressed={picked}
                   aria-label={picked ? `${order + 1}번째로 고른 카드 (${spread.positions[order].label}), 선택 취소` : `카드 ${slot + 1}`}
-                  className={`relative block h-24 w-14 transition-transform duration-200 ${picked ? "-translate-y-4" : "hover:-translate-y-2"}`}
+                  className={`relative block aspect-[480/830] w-14 transition-transform duration-200 ${picked ? "-translate-y-4" : "hover:-translate-y-2"}`}
                 >
                   <CardBack className={`size-full text-sm ${picked ? "ring-2 ring-gold ring-offset-2 ring-offset-background" : ""}`} />
                   {picked && (

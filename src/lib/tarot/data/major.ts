@@ -4,7 +4,6 @@ export interface MajorSpec {
   nameEn: string;
   name: string;
   slug: string;
-  symbol: string;
   element: Element;
   caution: string;
   upright: CardSide;
@@ -15,7 +14,7 @@ export interface MajorSpec {
 // 해석 문장은 전통적인 RWS 상징을 바탕으로 직접 작성했다 (외부 사이트 문장 복제 금지)
 export const MAJORS: MajorSpec[] = [
   {
-    nameEn: "The Fool", name: "바보", slug: "the-fool", symbol: "🌬️", element: "air",
+    nameEn: "The Fool", name: "바보", slug: "the-fool", element: "air",
     caution: "들뜬 마음으로 준비 없이 움직이면 작은 실수가 생길 수 있어요.",
     upright: {
       keywords: ["새로운 시작", "자유", "모험"],
@@ -40,7 +39,7 @@ export const MAJORS: MajorSpec[] = [
     combos: { reinforce: ["wands-1", "major-19"], oppose: ["major-4", "pentacles-4"] },
   },
   {
-    nameEn: "The Magician", name: "마법사", slug: "the-magician", symbol: "✨", element: "air",
+    nameEn: "The Magician", name: "마법사", slug: "the-magician", element: "air",
     caution: "재주만 믿고 말이 앞서면 신뢰를 잃을 수 있어요.",
     upright: {
       keywords: ["창조력", "실행력", "재능"],
@@ -65,7 +64,7 @@ export const MAJORS: MajorSpec[] = [
     combos: { reinforce: ["major-7", "wands-1"], oppose: ["major-18", "major-12"] },
   },
   {
-    nameEn: "The High Priestess", name: "여사제", slug: "the-high-priestess", symbol: "🌙", element: "water",
+    nameEn: "The High Priestess", name: "여사제", slug: "the-high-priestess", element: "water",
     caution: "혼자 속으로만 판단하면 오해가 쌓일 수 있어요.",
     upright: {
       keywords: ["직관", "내면의 지혜", "비밀"],
@@ -90,7 +89,7 @@ export const MAJORS: MajorSpec[] = [
     combos: { reinforce: ["major-18", "cups-7"], oppose: ["major-1", "major-7"] },
   },
   {
-    nameEn: "The Empress", name: "여황제", slug: "the-empress", symbol: "🌸", element: "earth",
+    nameEn: "The Empress", name: "여황제", slug: "the-empress", element: "earth",
     caution: "넘치는 애정이 간섭이나 과소비로 번지지 않게 조심하세요.",
     upright: {
       keywords: ["풍요", "돌봄", "결실"],
@@ -115,7 +114,7 @@ export const MAJORS: MajorSpec[] = [
     combos: { reinforce: ["pentacles-9", "cups-10"], oppose: ["pentacles-5", "major-9"] },
   },
   {
-    nameEn: "The Emperor", name: "황제", slug: "the-emperor", symbol: "👑", element: "fire",
+    nameEn: "The Emperor", name: "황제", slug: "the-emperor", element: "fire",
     caution: "원칙을 앞세우다 상대를 통제하려 들 수 있어요.",
     upright: {
       keywords: ["안정", "리더십", "질서"],
@@ -140,7 +139,7 @@ export const MAJORS: MajorSpec[] = [
     combos: { reinforce: ["pentacles-4", "major-11"], oppose: ["major-0", "wands-5"] },
   },
   {
-    nameEn: "The Hierophant", name: "교황", slug: "the-hierophant", symbol: "🗝️", element: "earth",
+    nameEn: "The Hierophant", name: "교황", slug: "the-hierophant", element: "earth",
     caution: "익숙한 방식만 고집하면 새로운 기회를 놓칠 수 있어요.",
     upright: {
       keywords: ["전통", "가르침", "신뢰"],
@@ -165,7 +164,7 @@ export const MAJORS: MajorSpec[] = [
     combos: { reinforce: ["major-11", "pentacles-3"], oppose: ["major-0", "major-15"] },
   },
   {
-    nameEn: "The Lovers", name: "연인", slug: "the-lovers", symbol: "💞", element: "air",
+    nameEn: "The Lovers", name: "연인", slug: "the-lovers", element: "air",
     caution: "마음이 끌리는 쪽만 보다가 중요한 조건을 놓칠 수 있어요.",
     upright: {
       keywords: ["사랑", "조화", "선택"],
@@ -190,7 +189,7 @@ export const MAJORS: MajorSpec[] = [
     combos: { reinforce: ["cups-2", "major-3"], oppose: ["swords-3", "major-15"] },
   },
   {
-    nameEn: "The Chariot", name: "전차", slug: "the-chariot", symbol: "🏇", element: "water",
+    nameEn: "The Chariot", name: "전차", slug: "the-chariot", element: "water",
     caution: "밀어붙이는 힘이 강한 만큼 주변과 충돌하기 쉬워요.",
     upright: {
       keywords: ["전진", "의지", "승리"],
@@ -215,7 +214,7 @@ export const MAJORS: MajorSpec[] = [
     combos: { reinforce: ["wands-6", "major-1"], oppose: ["swords-8", "major-12"] },
   },
   {
-    nameEn: "Strength", name: "힘", slug: "strength", symbol: "🦁", element: "fire",
+    nameEn: "Strength", name: "힘", slug: "strength", element: "fire",
     caution: "참기만 하다 보면 어느 순간 감정이 터질 수 있어요.",
     upright: {
       keywords: ["용기", "인내", "부드러운 힘"],
@@ -240,7 +239,7 @@ export const MAJORS: MajorSpec[] = [
     combos: { reinforce: ["wands-9", "major-14"], oppose: ["major-15", "wands-5"] },
   },
   {
-    nameEn: "The Hermit", name: "은둔자", slug: "the-hermit", symbol: "🏮", element: "earth",
+    nameEn: "The Hermit", name: "은둔자", slug: "the-hermit", element: "earth",
     caution: "혼자 해결하려다 도움의 손길을 놓칠 수 있어요.",
     upright: {
       keywords: ["성찰", "고독", "탐구"],
@@ -265,7 +264,7 @@ export const MAJORS: MajorSpec[] = [
     combos: { reinforce: ["swords-4", "major-2"], oppose: ["cups-3", "major-19"] },
   },
   {
-    nameEn: "Wheel of Fortune", name: "운명의 수레바퀴", slug: "wheel-of-fortune", symbol: "🎡", element: "fire",
+    nameEn: "Wheel of Fortune", name: "운명의 수레바퀴", slug: "wheel-of-fortune", element: "fire",
     caution: "흐름이 좋을 때일수록 다음 변화에 대비해 두세요.",
     upright: {
       keywords: ["전환점", "행운", "흐름"],
@@ -290,7 +289,7 @@ export const MAJORS: MajorSpec[] = [
     combos: { reinforce: ["major-19", "wands-8"], oppose: ["pentacles-4", "major-12"] },
   },
   {
-    nameEn: "Justice", name: "정의", slug: "justice", symbol: "⚖️", element: "air",
+    nameEn: "Justice", name: "정의", slug: "justice", element: "air",
     caution: "옳고 그름만 따지다 보면 마음이 상할 수 있어요.",
     upright: {
       keywords: ["공정", "균형", "책임"],
@@ -315,7 +314,7 @@ export const MAJORS: MajorSpec[] = [
     combos: { reinforce: ["major-20", "swords-1"], oppose: ["swords-7", "major-15"] },
   },
   {
-    nameEn: "The Hanged Man", name: "매달린 사람", slug: "the-hanged-man", symbol: "🙃", element: "water",
+    nameEn: "The Hanged Man", name: "매달린 사람", slug: "the-hanged-man", element: "water",
     caution: "기다림이 길어지면 기회도 함께 멀어질 수 있어요.",
     upright: {
       keywords: ["관점 전환", "기다림", "내려놓기"],
@@ -340,7 +339,7 @@ export const MAJORS: MajorSpec[] = [
     combos: { reinforce: ["swords-4", "major-9"], oppose: ["major-7", "wands-8"] },
   },
   {
-    nameEn: "Death", name: "죽음", slug: "death", symbol: "🦋", element: "water",
+    nameEn: "Death", name: "죽음", slug: "death", element: "water",
     caution: "끝내야 할 것을 미루면 변화가 더 크게 찾아와요.",
     upright: {
       keywords: ["끝과 시작", "변화", "정리"],
@@ -365,7 +364,7 @@ export const MAJORS: MajorSpec[] = [
     combos: { reinforce: ["major-16", "major-20"], oppose: ["cups-6", "pentacles-4"] },
   },
   {
-    nameEn: "Temperance", name: "절제", slug: "temperance", symbol: "🍶", element: "fire",
+    nameEn: "Temperance", name: "절제", slug: "temperance", element: "fire",
     caution: "균형을 맞추느라 결정이 늦어질 수 있어요.",
     upright: {
       keywords: ["균형", "조화", "절제"],
@@ -390,7 +389,7 @@ export const MAJORS: MajorSpec[] = [
     combos: { reinforce: ["pentacles-2", "major-11"], oppose: ["wands-5", "major-16"] },
   },
   {
-    nameEn: "The Devil", name: "악마", slug: "the-devil", symbol: "⛓️", element: "earth",
+    nameEn: "The Devil", name: "악마", slug: "the-devil", element: "earth",
     caution: "달콤한 유혹이나 나쁜 습관에 끌려가지 않게 조심하세요.",
     upright: {
       keywords: ["유혹", "집착", "욕망"],
@@ -415,7 +414,7 @@ export const MAJORS: MajorSpec[] = [
     combos: { reinforce: ["swords-8", "pentacles-4"], oppose: ["major-14", "major-17"] },
   },
   {
-    nameEn: "The Tower", name: "탑", slug: "the-tower", symbol: "⚡", element: "fire",
+    nameEn: "The Tower", name: "탑", slug: "the-tower", element: "fire",
     caution: "갑작스러운 변화나 충돌에 대비해 두세요.",
     upright: {
       keywords: ["급변", "깨달음", "붕괴"],
@@ -440,7 +439,7 @@ export const MAJORS: MajorSpec[] = [
     combos: { reinforce: ["major-13", "swords-10"], oppose: ["major-21", "pentacles-10"] },
   },
   {
-    nameEn: "The Star", name: "별", slug: "the-star", symbol: "⭐", element: "air",
+    nameEn: "The Star", name: "별", slug: "the-star", element: "air",
     caution: "희망에만 기대고 현실적인 준비를 놓치지 마세요.",
     upright: {
       keywords: ["희망", "치유", "영감"],
@@ -465,7 +464,7 @@ export const MAJORS: MajorSpec[] = [
     combos: { reinforce: ["major-19", "cups-1"], oppose: ["swords-9", "major-18"] },
   },
   {
-    nameEn: "The Moon", name: "달", slug: "the-moon", symbol: "🌕", element: "water",
+    nameEn: "The Moon", name: "달", slug: "the-moon", element: "water",
     caution: "막연한 불안이나 확인되지 않은 말에 흔들릴 수 있어요.",
     upright: {
       keywords: ["불안", "무의식", "환상"],
@@ -490,7 +489,7 @@ export const MAJORS: MajorSpec[] = [
     combos: { reinforce: ["cups-7", "major-2"], oppose: ["major-19", "swords-1"] },
   },
   {
-    nameEn: "The Sun", name: "태양", slug: "the-sun", symbol: "☀️", element: "fire",
+    nameEn: "The Sun", name: "태양", slug: "the-sun", element: "fire",
     caution: "잘될수록 자만하거나 주변을 놓치지 않게 조심하세요.",
     upright: {
       keywords: ["성공", "기쁨", "활력"],
@@ -515,7 +514,7 @@ export const MAJORS: MajorSpec[] = [
     combos: { reinforce: ["cups-10", "major-17"], oppose: ["major-18", "swords-9"] },
   },
   {
-    nameEn: "Judgement", name: "심판", slug: "judgement", symbol: "📯", element: "fire",
+    nameEn: "Judgement", name: "심판", slug: "judgement", element: "fire",
     caution: "과거를 너무 엄격하게 평가하면 자책에 빠질 수 있어요.",
     upright: {
       keywords: ["부활", "각성", "재평가"],
@@ -540,7 +539,7 @@ export const MAJORS: MajorSpec[] = [
     combos: { reinforce: ["major-13", "major-11"], oppose: ["swords-8", "cups-5"] },
   },
   {
-    nameEn: "The World", name: "세계", slug: "the-world", symbol: "🌍", element: "earth",
+    nameEn: "The World", name: "세계", slug: "the-world", element: "earth",
     caution: "끝났다고 방심하면 마무리에서 빈틈이 생길 수 있어요.",
     upright: {
       keywords: ["완성", "성취", "통합"],

@@ -1,3 +1,5 @@
+import { existsSync } from "node:fs";
+import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { cardById, TAROT_DECK } from "./cards";
 
@@ -49,5 +51,10 @@ describe("TAROT_DECK 데이터", () => {
     expect(cardById("cups-3")?.element).toBe("water");
     expect(cardById("swords-3")?.element).toBe("air");
     expect(cardById("pentacles-3")?.element).toBe("earth");
+  });
+
+  it("모든 카드에 이미지가 있다 (public/tarot/rws/{slug}.webp)", () => {
+    const missing = TAROT_DECK.filter((c) => !existsSync(path.join(process.cwd(), "public/tarot/rws", `${c.slug}.webp`)));
+    expect(missing.map((c) => c.slug)).toEqual([]);
   });
 });

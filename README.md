@@ -18,6 +18,7 @@ npm run dev                  # http://localhost:3000
 | `npm test` | Vitest 단위 테스트 |
 | `npm run typecheck` | 라우트 타입 생성 후 `tsc --noEmit` |
 | `npm run lint` | ESLint |
+| `node scripts/tarot/fetch-images.mjs` | 타로 카드 이미지(Wikimedia Commons, 퍼블릭 도메인) 받기 → `public/tarot/rws/` |
 
 ## 구조
 
@@ -29,7 +30,7 @@ src/
     api/today/route.ts   POST: 오늘의 운세 + 행운 요소 + 타로
     api/tarot/reading/   POST: 스프레드 해석 (seed + 고른 자리 → 결과, 재현 가능)
   components/            입력 폼, 운세·행운·타로 카드 (클라이언트)
-    tarot/               타로 상세 운세 흐름, 카드 펼치기, 결과 화면
+    tarot/               타로 상세 운세 흐름, 카드 펼치기, 결과 화면, 카드 이미지(card-face)
   lib/
     calendar/            음력·윤달 → 양력, KST 날짜, 오늘의 일진
     saju/                saju-fortune 어댑터, 간지·십신·합충, 오늘 운세 점수, 행운 요소

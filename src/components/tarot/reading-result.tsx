@@ -47,7 +47,7 @@ export function ReadingResult({
             const open = i < revealed;
             return (
               <li key={c.position.key} className="flex w-[4.5rem] flex-col items-center gap-1">
-                <div className="flip-card h-28 w-full" data-revealed={open}>
+                <div className="flip-card aspect-[480/830] w-full" data-revealed={open}>
                   <button
                     type="button"
                     onClick={() => setRevealed(i + 1)}
