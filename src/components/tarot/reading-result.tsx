@@ -3,8 +3,8 @@
 import Link from "next/link";
 import { useState } from "react";
 import { direction, type Reading } from "@/lib/tarot/interpret";
-import { buildAiPrompt } from "@/lib/tarot/prompt";
 import { TOPICS } from "@/lib/tarot/spreads";
+import { AskAi } from "./ask-ai";
 import { CardBack, CardFront } from "./card-face";
 
 const VERDICT_STYLE = { yes: "text-emerald-600 dark:text-emerald-400", maybe: "text-gold", no: "text-rose-600 dark:text-rose-400" } as const;
@@ -22,17 +22,7 @@ export function ReadingResult({
 }) {
   const total = reading.cards.length;
   const [revealed, setRevealed] = useState(initiallyRevealed ? total : 0);
-  const [copied, setCopied] = useState(false);
   const done = revealed >= total;
-
-  async function copyPrompt() {
-    try {
-      await navigator.clipboard.writeText(buildAiPrompt(reading));
-      setCopied(true);
-    } catch {
-      setCopied(false);
-    }
-  }
 
   return (
     <div className="flex flex-col gap-4">
@@ -121,6 +111,8 @@ export function ReadingResult({
             <p className="rounded-xl bg-accent-soft p-3 text-sm leading-relaxed text-accent">💡 {reading.advice}</p>
           </section>
 
+          <AskAi reading={reading} />
+
           <div className="grid grid-cols-2 gap-2">
             <button type="button" onClick={onRetry} className="rounded-xl border border-border py-3 text-sm font-medium">
               같은 주제로 다시 보기
@@ -129,9 +121,6 @@ export function ReadingResult({
               다른 주제 보기
             </button>
           </div>
-          <button type="button" onClick={copyPrompt} className="text-sm text-muted underline underline-offset-2">
-            {copied ? "복사했어요! 사용하는 AI에 붙여 넣어 보세요." : "AI에게 더 물어보기용 프롬프트 복사"}
-          </button>
         </>
       )}
     </div>

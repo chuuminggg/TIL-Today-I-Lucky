@@ -254,7 +254,7 @@ src/components/tarot/             # ✅ tarot-app, card-fan, reading-result, car
 | **T5. UI** ✅ | `/tarot` 흐름, 결과 화면, 로컬 기록 | 모바일에서 원카드·쓰리카드·관계 스프레드 끝까지 진행 |
 | **T6. 콘텐츠 채우기** ✅ | 궁정카드 16장 → 숫자카드 40장 상세 작성 | fallback 사용 카드 0장 |
 | **T7. 카드 사전·SEO** ✅ | `/tarot/cards`, 정적 생성, OG 이미지 | 78개 페이지 빌드 |
-| **T8. LLM** | Claude 문장 다듬기(스트리밍), 프롬프트 복사 버튼 | 실패 시 규칙 기반 fallback 확인 |
+| **T8. 해석 다듬기** (진행 중) | Claude 토큰 없이 — 외부 AI 이어 보기 ✅, 규칙 기반 이야기 문단 ▶ → [TAROT_AI_PLAN.md](./TAROT_AI_PLAN.md) | 서버 AI 비용 0 |
 
 `PLAN.md` 로드맵에서는 Phase 4 "상세 기능"의 쓰리카드 타로를 이 계획으로 대체한다.
 
