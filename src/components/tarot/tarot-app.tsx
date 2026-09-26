@@ -15,13 +15,17 @@ type Step =
   | { name: "loading" }
   | { name: "result"; reading: Reading; initiallyRevealed: boolean };
 
+const NETWORK_ERROR = "인터넷 연결을 확인하고 다시 시도해 주세요.";
+
 async function requestReading(request: ReadingRequest): Promise<Reading> {
   const res = await fetch("/api/tarot/reading", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(request),
+  }).catch(() => {
+    throw new Error(NETWORK_ERROR);
   });
-  const data = await res.json();
+  const data = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error(data.error ?? "타로를 해석하지 못했어요.");
   return data as Reading;
 }

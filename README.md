@@ -16,9 +16,18 @@ npm run dev                  # http://localhost:3000
 | `npm run dev` | 개발 서버 |
 | `npm run build` / `npm start` | 프로덕션 빌드 / 실행 |
 | `npm test` | Vitest 단위 테스트 |
-| `npm run typecheck` | 라우트 타입 생성 후 `tsc --noEmit` |
+| `npm run typecheck` | 라우트 타입 생성(`next typegen`) 후 `tsc --noEmit` — CI용. 개발 서버와 같은 `.next/dev/types`를 덮어쓰므로 개발 서버를 켠 채로는 쓰지 않기 |
+| `npm run typecheck:src` | `tsc --noEmit`만 — 개발 서버를 켠 채 타입 검사할 때 (라우트 타입은 개발 서버가 만들어 둔 것 사용) |
 | `npm run lint` | ESLint |
 | `node scripts/tarot/fetch-images.mjs` | 타로 카드 이미지(Wikimedia Commons, 퍼블릭 도메인) 받기 → `public/tarot/rws/` |
+
+## 배포
+
+- `main`에 병합되면 Vercel이 자동으로 Production 배포(https://til-today-i-lucky.vercel.app), 다른 브랜치·PR은 미리보기 배포.
+- GitHub Actions CI(`.github/workflows/ci.yml`)가 PR과 `main` 푸시마다 `lint` → `typecheck` → `test` → `build`를 실행. `main` 보호 규칙에서 CI 통과를 필수로 두면 실패한 코드가 배포되지 않는다.
+- 절대 주소(OG 이미지·사이트맵·구조화 데이터)는 Vercel 프로덕션 주소를 자동으로 쓴다. 커스텀 도메인을 붙이면 Vercel 환경 변수에 `NEXT_PUBLIC_SITE_URL`을 넣는다.
+- 방문 통계는 Vercel Web Analytics(`@vercel/analytics`) — Vercel 대시보드의 프로젝트 → Analytics에서 켜야 수집된다.
+- 배포 후 Google Search Console에 `/sitemap.xml` 제출.
 
 ## 구조
 
@@ -26,6 +35,8 @@ npm run dev                  # http://localhost:3000
 src/
   app/
     page.tsx             홈 (요청마다 렌더링)
+    sitemap.ts, robots.ts  검색엔진용 사이트맵(홈·타로·카드 사전 78장), robots.txt
+    not-found.tsx, error.tsx, loading.tsx  404·오류·불러오는 중 화면
     tarot/page.tsx       타로 상세 운세 (주제 → 스프레드 → 카드 고르기 → 해석)
     tarot/cards/         카드 사전 — 목록 + 78장 상세(빌드 때 정적 생성)
     api/today/route.ts   POST: 오늘의 운세 + 행운 요소 + 타로
@@ -39,6 +50,7 @@ src/
     tarot/               78장 해석 데이터, 스프레드, 시드 기반 뽑기·셔플, 해석 엔진
     profile/             입력 스키마(zod), localStorage 저장
     josa.ts              받침에 맞는 조사 붙이기
+    site.ts              절대 주소 기준(SITE_URL)
     today.ts             위 계산을 묶어 API 응답 생성
   types/k-skill.d.ts     saju-fortune / naming-house 타입 선언
 ```

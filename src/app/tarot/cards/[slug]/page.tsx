@@ -7,6 +7,7 @@ import { CardLink } from "@/components/tarot/card-link";
 import { cardBySlug, relatedCards, TAROT_DECK, type CardSide, type TarotCard } from "@/lib/tarot/cards";
 import { SUITS } from "@/lib/tarot/data/minor";
 import { ELEMENT_LABEL, YES_NO_LABEL } from "@/lib/tarot/labels";
+import { absoluteUrl } from "@/lib/site";
 
 // 78장 모두 빌드 때 만들고, 목록에 없는 주소는 404
 export const dynamicParams = false;
@@ -29,6 +30,30 @@ const TOPICS: Array<["love" | "feeling" | "career" | "money", string]> = [
   ["career", "💼 직업·학업"],
   ["money", "💰 금전"],
 ];
+
+// 검색엔진용 구조화 데이터 — 카드 설명 글(Article)이 타로 카드 사전 속 용어(DefinedTerm)를 다룬다
+function cardJsonLd(card: TarotCard) {
+  const url = absoluteUrl(`/tarot/cards/${card.slug}`);
+  return {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: `${card.name} (${card.nameEn}) 타로 카드 의미`,
+    description: card.upright.meaning,
+    image: absoluteUrl(cardImage(card)),
+    url,
+    mainEntityOfPage: url,
+    inLanguage: "ko",
+    keywords: [...card.upright.keywords, ...card.reversed.keywords].join(", "),
+    about: {
+      "@type": "DefinedTerm",
+      name: card.name,
+      alternateName: card.nameEn,
+      description: card.upright.meaning,
+      url,
+      inDefinedTermSet: { "@type": "DefinedTermSet", name: "타로 카드 사전", url: absoluteUrl("/tarot/cards") },
+    },
+  };
+}
 
 function SideSection({ title, side, reversed }: { title: string; side: CardSide; reversed: boolean }) {
   return (
@@ -88,6 +113,10 @@ export default async function TarotCardPage({ params }: PageProps<"/tarot/cards/
 
   return (
     <main className="mx-auto flex w-full max-w-md flex-1 flex-col gap-5 px-4 py-8">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(cardJsonLd(card)).replace(/</g, "\\u003c") }}
+      />
       <Link href="/tarot/cards" className="text-sm text-muted">
         ← 카드 사전
       </Link>
