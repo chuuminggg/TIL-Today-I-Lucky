@@ -29,6 +29,8 @@ export default async function Home() {
 
       <footer className="mt-auto pt-6 text-xs leading-relaxed text-muted">
         운세 풀이는 재미와 자기점검을 위한 참고용이며 의료·투자·법률 판단을 대신하지 않습니다.
+        <br />
+        입력한 생년월일은 이 기기에만 저장돼요. 서비스 개선을 위해 쿠키 없이 페이지별 방문 수만 집계합니다(Vercel Web Analytics).
       </footer>
     </main>
   );
