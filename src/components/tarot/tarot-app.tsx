@@ -2,8 +2,17 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { parseHistory, saveToHistory, useTarotHistoryRaw, type HistoryEntry } from "@/lib/tarot/history";
+import {
+  clearHistory,
+  parseHistory,
+  recentSameTopic,
+  removeFromHistory,
+  saveToHistory,
+  useTarotHistoryRaw,
+  type HistoryEntry,
+} from "@/lib/tarot/history";
 import type { Reading, ReadingRequest } from "@/lib/tarot/interpret";
+import { loadTarotSettings, saveTarotSettings } from "@/lib/tarot/settings";
 import { SPREADS, spreadsForTopic, TOPIC_IDS, TOPICS, type Spread, type Topic } from "@/lib/tarot/spreads";
 import { CardFan } from "./card-fan";
 import { ReadingResult } from "./reading-result";
@@ -34,7 +43,10 @@ const historyTitle = (topic: Topic, spreadName: string) => `${TOPICS[topic].labe
 
 function TopicStep({ onSelect, onOpen }: { onSelect: (topic: Topic) => void; onOpen: (entry: HistoryEntry) => void }) {
   const raw = useTarotHistoryRaw();
-  const history = useMemo(() => parseHistory(raw).slice(0, 5), [raw]);
+  const all = useMemo(() => parseHistory(raw), [raw]);
+  const [expanded, setExpanded] = useState(false);
+  const [confirmClear, setConfirmClear] = useState(false);
+  const history = expanded ? all : all.slice(0, 5);
 
   return (
     <div className="flex flex-col gap-5">
@@ -66,19 +78,71 @@ function TopicStep({ onSelect, onOpen }: { onSelect: (topic: Topic) => void; onO
 
       {history.length > 0 && (
         <section>
-          <h2 className="text-sm font-bold text-muted">최근 본 타로</h2>
+          <div className="flex items-baseline justify-between">
+            <h2 className="text-sm font-bold text-muted">{expanded ? `본 타로 기록 ${all.length}개` : "최근 본 타로"}</h2>
+            {(all.length > 5 || expanded) && (
+              <button
+                type="button"
+                onClick={() => {
+                  setExpanded((v) => !v);
+                  setConfirmClear(false);
+                }}
+                className="text-xs text-muted underline underline-offset-2"
+              >
+                {expanded ? "접기" : `전체 보기 (${all.length})`}
+              </button>
+            )}
+          </div>
           <ul className="mt-2 flex flex-col divide-y divide-border rounded-xl border border-border bg-card">
             {history.map((entry) => (
-              <li key={entry.request.seed}>
-                <button type="button" onClick={() => onOpen(entry)} className="flex w-full flex-col px-3 py-2.5 text-left">
-                  <span className="text-sm font-medium">{entry.request.question || entry.title}</span>
-                  <span className="text-xs text-muted">
+              <li key={entry.request.seed} className="flex items-center">
+                <button type="button" onClick={() => onOpen(entry)} className="flex min-w-0 flex-1 flex-col px-3 py-2.5 text-left">
+                  <span className="truncate text-sm font-medium">{entry.request.question || entry.title}</span>
+                  <span className="truncate text-xs text-muted">
                     {new Date(entry.createdAt).toLocaleDateString("ko-KR")} · {entry.title} · {entry.summary}
                   </span>
                 </button>
+                {expanded && (
+                  <button
+                    type="button"
+                    onClick={() => removeFromHistory(entry.request.seed)}
+                    aria-label={`${entry.request.question || entry.title} 기록 삭제`}
+                    className="shrink-0 px-3 py-2.5 text-muted hover:text-foreground"
+                  >
+                    ✕
+                  </button>
+                )}
               </li>
             ))}
           </ul>
+          {expanded && (
+            <div className="mt-2 flex items-center justify-end gap-2 text-xs">
+              {confirmClear ? (
+                <>
+                  <span className="text-muted">기록 {all.length}개를 모두 지울까요?</span>
+                  <button type="button" onClick={() => setConfirmClear(false)} className="rounded-lg border border-border px-2.5 py-1">
+                    취소
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      clearHistory();
+                      setConfirmClear(false);
+                      setExpanded(false);
+                    }}
+                    className="rounded-lg bg-rose-600 px-2.5 py-1 font-medium text-white"
+                  >
+                    모두 지우기
+                  </button>
+                </>
+              ) : (
+                <button type="button" onClick={() => setConfirmClear(true)} className="text-muted underline underline-offset-2">
+                  기록 모두 지우기
+                </button>
+              )}
+            </div>
+          )}
+          <p className="mt-1.5 text-[0.7rem] text-muted">기록은 이 기기에만 저장돼요 (최근 20개).</p>
         </section>
       )}
     </div>
@@ -89,16 +153,22 @@ function SetupStep({
   topic,
   onBack,
   onStart,
+  onOpen,
 }: {
   topic: Topic;
   onBack: () => void;
   onStart: (options: { question: string; spread: Spread; allowReversed: boolean }) => void;
+  onOpen: (entry: HistoryEntry) => void;
 }) {
   const recommended = spreadsForTopic(topic);
   const [question, setQuestion] = useState("");
   const [spreadId, setSpreadId] = useState(recommended[0].id);
   const [showAll, setShowAll] = useState(false);
-  const [allowReversed, setAllowReversed] = useState(true);
+  // 설정 화면은 주제를 고른 뒤에만 그려지므로(서버 렌더 없음) 기기 저장값을 바로 읽어도 된다
+  const [allowReversed, setAllowReversed] = useState(() => loadTarotSettings().allowReversed);
+  const [openedAt] = useState(() => Date.now());
+  const raw = useTarotHistoryRaw();
+  const [recent] = useMemo(() => recentSameTopic(parseHistory(raw), topic, openedAt), [raw, topic, openedAt]);
   const spreads = showAll ? SPREADS : recommended;
   const spread = SPREADS.find((s) => s.id === spreadId) ?? recommended[0];
 
@@ -165,9 +235,29 @@ function SetupStep({
       </section>
 
       <label className="flex items-center gap-2 text-sm">
-        <input type="checkbox" checked={allowReversed} onChange={(e) => setAllowReversed(e.target.checked)} className="size-4 accent-accent" />
-        역방향 카드 포함
+        <input
+          type="checkbox"
+          checked={allowReversed}
+          onChange={(e) => {
+            setAllowReversed(e.target.checked);
+            saveTarotSettings({ allowReversed: e.target.checked });
+          }}
+          className="size-4 accent-accent"
+        />
+        역방향 카드 포함 <span className="text-xs text-muted">(다음에도 기억해요)</span>
       </label>
+
+      {recent && (
+        <div className="rounded-xl border border-gold/40 bg-gold/10 p-3 text-sm leading-relaxed">
+          <p>
+            🕯️ 조금 전에도 {TOPICS[topic].label} 타로를 봤어요. 같은 질문을 짧은 시간에 반복해서 뽑으면 카드의 메시지가 흐려질 수 있어요.
+            앞의 결과를 먼저 곱씹어 보는 건 어떨까요?
+          </p>
+          <button type="button" onClick={() => onOpen(recent)} className="mt-1.5 text-sm font-medium text-accent underline underline-offset-2">
+            앞의 결과 다시 보기
+          </button>
+        </div>
+      )}
 
       <button
         type="button"
@@ -214,6 +304,7 @@ export function TarotApp() {
         <SetupStep
           topic={step.topic}
           onBack={() => setStep({ name: "topic" })}
+          onOpen={(entry) => show(entry.request, true)}
           onStart={(options) => setStep({ name: "pick", topic: step.topic, seed: crypto.randomUUID(), ...options })}
         />
       )}

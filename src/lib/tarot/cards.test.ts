@@ -1,6 +1,7 @@
 import { existsSync } from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
+import { SYMBOLS } from "./data/symbols";
 import { cardById, cardBySlug, relatedCards, TAROT_DECK } from "./cards";
 
 describe("TAROT_DECK 데이터", () => {
@@ -87,5 +88,20 @@ describe("TAROT_DECK 데이터", () => {
     expect(sun.reinforce.map((c) => c.id)).toContain("major-17");
     expect(sun.oppose.map((c) => c.id)).toContain("cups-5");
     expect(relatedCards(cardById("cups-5")!).oppose.map((c) => c.id)).toContain("major-19");
+  });
+});
+
+describe("그림 속 상징 (카드 사전)", () => {
+  it("메이저 22장 모두 상징이 4개 이상이고, 이름이 겹치지 않는다", () => {
+    for (const card of TAROT_DECK.filter((c) => c.arcana === "major")) {
+      const symbols = SYMBOLS[card.id];
+      expect(symbols?.length, card.id).toBeGreaterThanOrEqual(4);
+      expect(new Set(symbols.map((s) => s.name)).size, card.id).toBe(symbols.length);
+      for (const s of symbols) expect(s.meaning, `${card.id} ${s.name}`).toMatch(/[.요]$/);
+    }
+  });
+
+  it("없는 카드 id를 쓰지 않는다", () => {
+    for (const id of Object.keys(SYMBOLS)) expect(cardById(id), id).toBeDefined();
   });
 });

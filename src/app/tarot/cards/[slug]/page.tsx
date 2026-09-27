@@ -6,6 +6,7 @@ import { cardImage } from "@/components/tarot/card-face";
 import { CardLink } from "@/components/tarot/card-link";
 import { cardBySlug, relatedCards, TAROT_DECK, type CardSide, type TarotCard } from "@/lib/tarot/cards";
 import { SUITS } from "@/lib/tarot/data/minor";
+import { SYMBOLS } from "@/lib/tarot/data/symbols";
 import { ELEMENT_LABEL, YES_NO_LABEL } from "@/lib/tarot/labels";
 import { absoluteUrl } from "@/lib/site";
 
@@ -139,6 +140,23 @@ export default async function TarotCardPage({ params }: PageProps<"/tarot/cards/
 
       <SideSection title="정방향" side={card.upright} reversed={false} />
       <SideSection title="역방향" side={card.reversed} reversed />
+
+      {SYMBOLS[card.id] && (
+        <section className="flex flex-col gap-3 rounded-2xl border border-border bg-card p-5">
+          <div>
+            <h2 className="font-bold">그림 속 상징</h2>
+            <p className="mt-0.5 text-xs text-muted">라이더-웨이트-스미스(1909) 그림에 담긴 요소와 그 의미</p>
+          </div>
+          <dl className="flex flex-col gap-2.5">
+            {SYMBOLS[card.id].map((symbol) => (
+              <div key={symbol.name}>
+                <dt className="text-sm font-medium">🔎 {symbol.name}</dt>
+                <dd className="mt-0.5 text-sm leading-relaxed text-muted">{symbol.meaning}</dd>
+              </div>
+            ))}
+          </dl>
+        </section>
+      )}
 
       <section className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-5">
         <div>
