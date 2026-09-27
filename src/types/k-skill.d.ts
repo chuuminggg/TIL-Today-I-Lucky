@@ -91,6 +91,21 @@ declare module "saju-fortune" {
   export function callSajuTool(name: string, args: Record<string, unknown>): unknown;
 }
 
+// analyzeSaju 내부 단계. 연주·월주를 절입 시각 기준으로 바로잡은 뒤 같은 단계를 다시 돌리려고 쓴다 (lib/saju/adapter.ts)
+declare module "saju-fortune/src/readings" {
+  import type { CompatibilityResult, DayMaster, Element, FortuneType, SajuAnalysis, Yongsin } from "saju-fortune";
+
+  type Pillars = SajuAnalysis["pillars"];
+  export function countFiveElements(pillars: Pillars): Record<Element, number>;
+  export function getDominantElements(counts: Record<Element, number>): Element[];
+  export function getWeakElements(counts: Record<Element, number>): Element[];
+  export function estimateDayMasterStrength(pillars: Pillars, counts: Record<Element, number>): DayMaster["strength"];
+  export function selectUsefulElements(dayMaster: DayMaster, counts: Record<Element, number>): Yongsin;
+  export function buildFortuneReading(result: SajuAnalysis, fortuneType: FortuneType, targetYear?: number): NonNullable<SajuAnalysis["fortune"]>;
+  export function formatElement(element: Element): string;
+  export function summarizePerson(result: SajuAnalysis): CompatibilityResult["people"][number];
+}
+
 declare module "naming-house" {
   import type { Element, Gender, SajuAnalysis } from "saju-fortune";
 

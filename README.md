@@ -45,7 +45,7 @@ src/
     tarot/               타로 상세 운세 흐름, 카드 펼치기, 결과 화면, 카드 이미지(card-face)
   lib/
     calendar/            음력·윤달 → 양력, KST 날짜, 오늘의 일진
-    saju/                saju-fortune 어댑터, 간지·십신·합충, 오늘 운세 점수, 행운 요소
+    saju/                saju-fortune 어댑터(연·월주 절입 보정), 간지·십신·합충, 오늘 운세 점수, 행운 요소, 만세력 대조 테스트
     naming/              naming-house 어댑터
     tarot/               78장 해석 데이터, 스프레드, 시드 기반 뽑기·셔플, 해석 엔진
     profile/             입력 스키마(zod), localStorage 저장
@@ -57,5 +57,6 @@ src/
 
 사주·작명 계산은 [k-skill](https://github.com/NomaDamas/k-skill)의 `saju-fortune`, `naming-house` 패키지를 사용합니다.
 두 패키지 모두 음력을 변환하지 않으므로 반드시 `lib/saju/adapter.ts`를 거쳐 호출하세요.
+`saju-fortune`은 절기를 고정 날짜로 계산해 절입 전후 출생의 연주·월주가 틀릴 수 있어, 어댑터가 [manseryeok](https://github.com/yhj1024/manseryeok)(한국천문연구원 절입 시각 기반)으로 바로잡습니다 — 대조 테스트는 `lib/saju/accuracy.test.ts`.
 
 > 운세 풀이는 재미와 자기점검을 위한 참고용이며 의료·투자·법률·개명 판단을 대신하지 않습니다.
