@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Analytics } from "@vercel/analytics/next";
 import { Noto_Sans_KR } from "next/font/google";
 import "./globals.css";
 
@@ -19,7 +20,11 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="ko" className={`${notoSansKr.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        {children}
+        {/* 쿠키 없는 방문 통계 — Vercel 대시보드에서 Web Analytics를 켜야 수집된다 */}
+        <Analytics />
+      </body>
     </html>
   );
 }
