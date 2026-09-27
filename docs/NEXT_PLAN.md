@@ -28,7 +28,8 @@
 
 > **진행 (2026-09-27, `feat/p0-stability`)** — 코드로 할 수 있는 항목 반영: 0-2 CI 워크플로, 0-3 `typecheck:src`, 0-4 sitemap·robots·카드 JSON-LD, 0-5 404·오류·로딩 화면(+홈 운세 "다시 시도", 네트워크 오류 안내), 0-7 `<Analytics />`·수집 안내 문구, 0-8 README 배포 절차.
 > **0-6 완료:** [manseryeok](https://github.com/yhj1024/manseryeok)(KASI 기반, MIT)과 대조 — 일주·시주·일진·음력 변환은 일치, **연주·월주는 절기 경계에서 틀려 어댑터에서 보정**. 자세한 표시는 PLAN 6장.
-> **남은 일(사람 손 필요):** 0-1 실기기 브라우저 확인 · 0-2 `main` 보호 규칙 · 0-4 Search Console 제출 · 0-7 Vercel 대시보드에서 Analytics 켜기 · 0-8 원격 브랜치 삭제.
+> **남은 일(사람 손 필요):** 0-1 실기기 브라우저 확인 · 0-4 Search Console에 사이트맵 제출(병합·배포 후) · 0-7 Vercel 대시보드에서 Web Analytics 켜기 · 0-8 병합 끝난 원격 브랜치 4개 삭제(`git push origin --delete feat/mvp feat/tarot-ai-handoff feat/tarot-narrative fix/og-metadata-base` — 모두 `main`에 포함 확인).
+> **0-2 보호 규칙은 보류:** 비공개 저장소 + GitHub Free에서는 브랜치 보호·Rulesets를 쓸 수 없음(API 403). CI는 PR마다 돌므로 병합 전에 결과를 확인하는 것으로 대신하고, 저장소 공개 또는 Pro 전환 시 `check` 작업을 필수로 지정.
 
 | # | 과제 | 할 일 | 완료 기준 |
 | --- | --- | --- | --- |
