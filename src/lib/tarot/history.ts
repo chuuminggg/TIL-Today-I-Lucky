@@ -40,6 +40,23 @@ export function saveToHistory(reading: Reading, title: string) {
     summary: reading.summary.title,
   };
   const rest = parseHistory(readStorage(KEY)).filter((e) => e.request.seed !== seed);
-  writeStorage(KEY, JSON.stringify([entry, ...rest].slice(0, MAX)));
+  writeHistory([entry, ...rest].slice(0, MAX));
+}
+
+function writeHistory(entries: HistoryEntry[]) {
+  writeStorage(KEY, entries.length ? JSON.stringify(entries) : null);
   window.dispatchEvent(new Event(EVENT));
+}
+
+export function removeFromHistory(seed: string) {
+  writeHistory(parseHistory(readStorage(KEY)).filter((e) => e.request.seed !== seed));
+}
+
+export function clearHistory() {
+  writeHistory([]);
+}
+
+/** 같은 주제를 최근 windowMs 안에 본 기록 (가장 최근 것부터) */
+export function recentSameTopic(entries: HistoryEntry[], topic: HistoryEntry["request"]["topic"], now: number, windowMs = 30 * 60_000) {
+  return entries.filter((e) => e.request.topic === topic && now - Date.parse(e.createdAt) < windowMs);
 }
