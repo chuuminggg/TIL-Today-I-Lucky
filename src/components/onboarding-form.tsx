@@ -7,6 +7,12 @@ interface Props {
   initial?: BirthProfileInput | null;
   onSubmit: (profile: BirthProfileInput) => void;
   onCancel?: () => void;
+  // 궁합의 상대 입력처럼 다른 용도로 쓸 때 문구를 바꾼다
+  title?: string;
+  description?: string;
+  nameLabel?: string;
+  namePlaceholder?: string;
+  submitLabel?: string;
 }
 
 const pad = (value: string) => value.padStart(2, "0");
@@ -45,7 +51,16 @@ function Segmented<T extends string>({
 const inputClass =
   "w-full rounded-xl border border-border bg-card px-3 py-2.5 text-base outline-none focus:border-accent";
 
-export function OnboardingForm({ initial, onSubmit, onCancel }: Props) {
+export function OnboardingForm({
+  initial,
+  onSubmit,
+  onCancel,
+  title = "내 정보 입력",
+  description = "정보는 이 기기에만 저장되고, 운세 계산에만 사용해요.",
+  nameLabel = "이름 (선택)",
+  namePlaceholder = "행운이",
+  submitLabel = "오늘의 운세 보기",
+}: Props) {
   const [initYear, initMonth, initDay] = initial?.birthDate.split("-") ?? ["", "", ""];
   const [name, setName] = useState(initial?.name ?? "");
   const [calendar, setCalendar] = useState<"solar" | "lunar">(initial?.calendar ?? "solar");
@@ -83,13 +98,13 @@ export function OnboardingForm({ initial, onSubmit, onCancel }: Props) {
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-5 rounded-2xl border border-border bg-card p-5">
       <div>
-        <h2 className="text-lg font-bold">내 정보 입력</h2>
-        <p className="mt-1 text-sm text-muted">정보는 이 기기에만 저장되고, 운세 계산에만 사용해요.</p>
+        <h2 className="text-lg font-bold">{title}</h2>
+        <p className="mt-1 text-sm text-muted">{description}</p>
       </div>
 
       <label className="flex flex-col gap-1.5 text-sm font-medium">
-        이름 (선택)
-        <input className={inputClass} value={name} onChange={(e) => setName(e.target.value)} maxLength={20} placeholder="행운이" />
+        {nameLabel}
+        <input className={inputClass} value={name} onChange={(e) => setName(e.target.value)} maxLength={20} placeholder={namePlaceholder} />
       </label>
 
       <div className="flex flex-col gap-1.5 text-sm font-medium">
@@ -147,7 +162,7 @@ export function OnboardingForm({ initial, onSubmit, onCancel }: Props) {
           </button>
         )}
         <button type="submit" className="flex-[2] rounded-xl bg-accent py-3 font-bold text-white dark:text-background">
-          오늘의 운세 보기
+          {submitLabel}
         </button>
       </div>
     </form>
