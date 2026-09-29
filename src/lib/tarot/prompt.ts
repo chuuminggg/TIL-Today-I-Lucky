@@ -1,3 +1,4 @@
+import { aiChatUrl as chatUrl, type AiTarget } from "@/lib/ai-handoff";
 import { direction, type Reading } from "./interpret";
 import { ELEMENT_LABEL } from "./labels";
 import { TOPICS, type Topic } from "./spreads";
@@ -76,26 +77,8 @@ export function buildAiPrompt(reading: Reading, { compact = false } = {}): strin
   return sections.filter((line) => line !== null).join("\n");
 }
 
-export type AiTarget = "chatgpt" | "gemini";
+export { AI_TARGETS, MAX_PREFILL_URL_LENGTH, type AiTarget } from "@/lib/ai-handoff";
 
-export const AI_TARGETS: Record<AiTarget, string> = { chatgpt: "ChatGPT", gemini: "Gemini" };
-
-// 한글은 인코딩하면 약 6배로 길어진다 (3장 ≈ 9천 자, 켈틱 크로스 10장 ≈ 1만 5천 자).
-// CDN·프록시의 URL 길이 제한(보통 8–16KB)을 넘지 않게 제한한다. 짧은 판 기준으로 켈틱 크로스(10장)까지 실린다.
-export const MAX_PREFILL_URL_LENGTH = 12_000;
-
-const chatGptUrl = (prompt: string) => `https://chatgpt.com/?q=${encodeURIComponent(prompt)}`;
-
-/**
- * AI 서비스 새 대화 주소.
- * ChatGPT는 ?q= 로 입력창을 미리 채운다 — 전체 프롬프트가 길면 짧은 판으로, 그래도 길면 빈 대화.
- * Gemini는 주소로 미리 채우기를 지원하지 않아 빈 대화를 연다. 어느 경우든 화면에서 전체 프롬프트를 클립보드에 복사해 둔다.
- */
-export function aiChatUrl(target: AiTarget, reading: Reading): { url: string; prefilled: boolean } {
-  if (target === "gemini") return { url: "https://gemini.google.com/app", prefilled: false };
-  for (const compact of [false, true]) {
-    const url = chatGptUrl(buildAiPrompt(reading, { compact }));
-    if (url.length <= MAX_PREFILL_URL_LENGTH) return { url, prefilled: true };
-  }
-  return { url: "https://chatgpt.com/", prefilled: false };
-}
+/** ChatGPT에는 전체 프롬프트가 길면 짧은 판을 싣는다 */
+export const aiChatUrl = (target: AiTarget, reading: Reading) =>
+  chatUrl(target, [buildAiPrompt(reading), buildAiPrompt(reading, { compact: true })]);

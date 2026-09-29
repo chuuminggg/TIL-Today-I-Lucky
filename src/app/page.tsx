@@ -5,6 +5,12 @@ import { todayKST } from "@/lib/calendar/lunar";
 
 const WEEKDAYS = ["일", "월", "화", "수", "목", "금", "토"];
 
+const NAV = [
+  { href: "/tarot", label: "🔮 타로" },
+  { href: "/saju", label: "🧭 내 사주" },
+  { href: "/compat", label: "💞 궁합" },
+];
+
 export default async function Home() {
   await connection(); // 날짜가 바뀌므로 빌드 시 prerender하지 않고 요청마다 렌더링
   const today = todayKST();
@@ -13,16 +19,20 @@ export default async function Home() {
 
   return (
     <main className="mx-auto flex w-full max-w-md flex-1 flex-col gap-5 px-4 py-8">
-      <header className="flex items-end justify-between">
+      <header className="flex flex-col gap-3">
         <div>
           <p className="text-sm text-muted">
             {y}년 {m}월 {d}일 {weekday}요일
           </p>
           <h1 className="text-2xl font-bold">Today I Lucky 🍀</h1>
         </div>
-        <Link href="/tarot" className="rounded-full bg-accent-soft px-3 py-1.5 text-sm font-medium text-accent">
-          🔮 타로 상세 운세
-        </Link>
+        <nav aria-label="더 보기" className="grid grid-cols-3 gap-1.5 text-center text-sm font-medium">
+          {NAV.map(({ href, label }) => (
+            <Link key={href} href={href} className="rounded-full bg-accent-soft px-2 py-1.5 text-accent">
+              {label}
+            </Link>
+          ))}
+        </nav>
       </header>
 
       <TodayApp />
