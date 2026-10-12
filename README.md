@@ -38,14 +38,18 @@ src/
     sitemap.ts, robots.ts  검색엔진용 사이트맵(홈·타로·카드 사전 78장), robots.txt
     not-found.tsx, error.tsx, loading.tsx  404·오류·불러오는 중 화면
     tarot/page.tsx       타로 상세 운세 (주제 → 스프레드 → 카드 고르기 → 해석)
+    saju/page.tsx        사주 상세 풀이 (명식 표·오행·용신·십신·주제별·대운·세운)
+    compat/page.tsx      사주 궁합 (관계 유형 → 상대 입력 → 궁합)
     tarot/cards/         카드 사전 — 목록 + 78장 상세(빌드 때 정적 생성)
     api/today/route.ts   POST: 오늘의 운세 + 행운 요소 + 타로
     api/tarot/reading/   POST: 스프레드 해석 (seed + 고른 자리 → 결과, 재현 가능)
+    api/saju/, api/compat/  POST: 사주 상세 / 궁합 계산
   components/            입력 폼, 운세·행운·타로 카드 (클라이언트)
     tarot/               타로 상세 운세 흐름, 카드 펼치기, 결과 화면, 카드 이미지(card-face)
   lib/
     calendar/            음력·윤달 → 양력, KST 날짜, 오늘의 일진
-    saju/                saju-fortune 어댑터(연·월주 절입 보정), 간지·십신·합충, 오늘 운세 점수, 행운 요소, 만세력 대조 테스트
+    saju/                saju-fortune 어댑터(연·월주 절입 보정), 간지·십신·합충·지장간, 오늘 운세 점수, 행운 요소,
+                         사주 상세(detail.ts, 대운은 manseryeok)·궁합(compat.ts)·AI 프롬프트, 만세력 대조 테스트
     naming/              naming-house 어댑터
     tarot/               78장 해석 데이터, 스프레드, 시드 기반 뽑기·셔플, 해석 엔진
     profile/             입력 스키마(zod), localStorage 저장
