@@ -101,3 +101,55 @@ export const isHarmony = (a: number, b: number) =>
 
 /** 지지 충: 정반대(6칸 차이) */
 export const isClash = (a: number, b: number) => Math.abs(a - b) === 6;
+
+// 지지 삼합: 신자진(水) · 해묘미(木) · 인오술(火) · 사유축(金) — 셋 중 둘만 만나도 그 기운이 모인다(반합)
+const THREE_HARMONY: Array<{ branches: [number, number, number]; element: Element }> = [
+  { branches: [8, 0, 4], element: "water" },
+  { branches: [11, 3, 7], element: "wood" },
+  { branches: [2, 6, 10], element: "fire" },
+  { branches: [5, 9, 1], element: "metal" },
+];
+
+/** 두 지지가 같은 삼합에 속하면 그 삼합의 오행 */
+export function threeHarmonyOf(a: number, b: number): Element | null {
+  if (a === b) return null;
+  return THREE_HARMONY.find(({ branches }) => branches.includes(a) && branches.includes(b))?.element ?? null;
+}
+
+// 지지 형: 인사신 · 축술미(삼형), 자묘(상형), 진진·오오·유유·해해(자형)
+const PUNISHMENT_GROUPS = [[2, 5, 8], [1, 10, 7], [0, 3]];
+const SELF_PUNISHMENT = [4, 6, 9, 11];
+
+export const isPunishment = (a: number, b: number) =>
+  a === b ? SELF_PUNISHMENT.includes(a) : PUNISHMENT_GROUPS.some((g) => g.includes(a) && g.includes(b));
+
+export type BranchRelation = "육합" | "삼합" | "충" | "형";
+
+/** 두 지지 사이의 관계 — 좋은 관계(육합·삼합)와 부딪히는 관계(충·형)를 함께 돌려준다 */
+export function branchRelations(a: number, b: number): BranchRelation[] {
+  const relations: BranchRelation[] = [];
+  if (isHarmony(a, b)) relations.push("육합");
+  if (threeHarmonyOf(a, b)) relations.push("삼합");
+  if (isClash(a, b)) relations.push("충");
+  if (isPunishment(a, b)) relations.push("형");
+  return relations;
+}
+
+/** 지장간 — 지지 속에 숨은 천간 (여기 → 중기 → 정기 순, 마지막이 본기) */
+export const HIDDEN_STEMS: Record<string, string[]> = {
+  자: ["임", "계"],
+  축: ["계", "신", "기"],
+  인: ["무", "병", "갑"],
+  묘: ["갑", "을"],
+  진: ["을", "계", "무"],
+  사: ["무", "경", "병"],
+  오: ["병", "기", "정"],
+  미: ["정", "을", "기"],
+  신: ["무", "임", "경"],
+  유: ["경", "신"],
+  술: ["신", "정", "무"],
+  해: ["무", "갑", "임"],
+};
+
+export const stemByKo = (ko: string) => STEMS.find((s) => s.ko === ko)!;
+export const branchIndexByKo = (ko: string) => BRANCHES.findIndex((b) => b.ko === ko);
