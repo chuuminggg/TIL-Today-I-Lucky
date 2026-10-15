@@ -1,6 +1,7 @@
 import type { Element } from "saju-fortune";
 import { analyze, compatibility, type BirthProfile } from "./adapter";
 import {
+  compatHeadline,
   DAY_BRANCH_TEXT,
   DAY_MASTER_TEXT,
   PARTNER_ROLE,
@@ -46,13 +47,6 @@ export interface CompatDetail {
   tips: string[];
   focusAreas: string[];
   limitations: string[];
-}
-
-function headlineOf(score: number) {
-  if (score >= 85) return "서로를 크게 채워 주는 궁합이에요";
-  if (score >= 70) return "잘 맞는 부분이 많은 궁합이에요";
-  if (score >= 58) return "노력하면 잘 맞춰 갈 수 있는 궁합이에요";
-  return "서로의 다름을 배워 가는 궁합이에요";
 }
 
 function elementBond(me: Element, partner: Element) {
@@ -127,7 +121,7 @@ export function getCompatDetail(
   return {
     relation,
     score: base.score,
-    headline: headlineOf(base.score),
+    headline: compatHeadline(base.score),
     people: [person(a, me.name || "나"), person(b, partner.name || "상대")],
     roles: {
       meToPartner: { tenGod: meToPartner, text: PARTNER_ROLE[meToPartner] },

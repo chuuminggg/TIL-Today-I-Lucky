@@ -14,6 +14,9 @@ export function CardBack({ className = "" }: { className?: string }) {
 /** 카드 이미지 경로 — scripts/tarot/fetch-images.mjs가 slug 이름으로 만든다 */
 export const cardImage = (card: TarotCard) => `/tarot/rws/${card.slug}.webp`;
 
+/** 공유 미리보기 이미지용 작은 JPG — 이미지 생성기(Satori)가 WebP를 읽지 못한다 */
+export const cardOgImage = (card: TarotCard) => `/tarot/og/${card.slug}.jpg`;
+
 export function CardFront({
   card,
   reversed,

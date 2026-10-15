@@ -98,6 +98,14 @@ export const ZODIAC_TEXT: Record<BranchRelation | "none" | "same", string> = {
   none: "띠로는 무난한 사이예요.",
 };
 
+/** 궁합 점수 구간별 한 줄 — 공유 이미지도 주소의 점수로 이 문장을 다시 만든다 */
+export function compatHeadline(score: number) {
+  if (score >= 85) return "서로를 크게 채워 주는 궁합이에요";
+  if (score >= 70) return "잘 맞는 부분이 많은 궁합이에요";
+  if (score >= 58) return "노력하면 잘 맞춰 갈 수 있는 궁합이에요";
+  return "서로의 다름을 배워 가는 궁합이에요";
+}
+
 export const RELATION_TYPES = {
   lover: { label: "연인", emoji: "💑" },
   crush: { label: "썸", emoji: "💭" },
