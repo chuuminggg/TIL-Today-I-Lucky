@@ -70,6 +70,8 @@ describe("오늘의 이야기 문단", () => {
       expect(story.split(/(?<=요\.)\s/).length).toBeGreaterThanOrEqual(3);
       expect(avoid.length).toBeGreaterThanOrEqual(1);
       expect(avoid.length).toBeLessThanOrEqual(3);
+      for (const item of avoid) expect(item, item).toMatch(/[.요]$/);
+      expect(avoid.join(" "), "조사").not.toMatch(/[고증정]는 /);
       stories.add(story);
     }
     expect(stories.size).toBe(7);

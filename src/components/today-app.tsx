@@ -3,7 +3,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { parseProfile, saveProfile, useStoredProfileRaw } from "@/lib/profile/storage";
 import type { BirthProfileInput } from "@/lib/profile/schema";
+import { buildTodayPrompt } from "@/lib/saju/today-prompt";
 import type { TodayReading } from "@/lib/today";
+import { AskAi } from "./ask-ai";
 import { FortuneCard } from "./fortune-card";
 import { LuckyItems } from "./lucky-items";
 import { OnboardingForm } from "./onboarding-form";
@@ -89,6 +91,11 @@ function TodayView({ profile, onEdit }: { profile: BirthProfileInput; onEdit: ()
       <FortuneCard reading={reading} />
       <LuckyItems lucky={reading.lucky} />
       <TarotCard drawn={reading.tarot} date={reading.date} />
+      <AskAi
+        prompts={[buildTodayPrompt(reading), buildTodayPrompt(reading, { compact: true })]}
+        description="오늘의 일진과 내 명식, 점수 근거를 담은 상담 프롬프트를 만들어 두었어요. 사용 중인 AI에서 오늘 하루를 더 자세히 물어보세요."
+        notice="생년월일시는 빼고 계산된 간지·점수만 선택한 AI 서비스로 전달돼요."
+      />
     </div>
   );
 }

@@ -26,7 +26,7 @@ export function FortuneCard({ reading }: { reading: TodayReading }) {
         </div>
       </div>
 
-      <p className="leading-relaxed">{fortune.summary}</p>
+      <p className="leading-relaxed">{fortune.story}</p>
 
       <ul className="flex flex-col gap-3 border-t border-border pt-4">
         {fortune.categories.map((c) => (
@@ -40,16 +40,20 @@ export function FortuneCard({ reading }: { reading: TodayReading }) {
         ))}
       </ul>
 
-      <dl className="grid gap-2 rounded-xl bg-accent-soft p-4 text-sm">
-        <div>
-          <dt className="inline font-bold text-accent">조언 · </dt>
-          <dd className="inline">{fortune.advice}</dd>
-        </div>
-        <div>
-          <dt className="inline font-bold text-muted">주의 · </dt>
-          <dd className="inline">{fortune.caution}</dd>
-        </div>
-      </dl>
+      <div className="grid gap-2 sm:grid-cols-2">
+        <section className="rounded-xl bg-accent-soft p-4 text-sm">
+          <h3 className="font-bold text-accent">👍 오늘 해 보면 좋은 것</h3>
+          <p className="mt-1.5 leading-relaxed">{fortune.advice}</p>
+        </section>
+        <section className="rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm dark:border-rose-900 dark:bg-rose-950/40">
+          <h3 className="font-bold text-rose-700 dark:text-rose-300">✋ 오늘 피하면 좋은 것</h3>
+          <ul className="mt-1.5 list-disc space-y-1 pl-4 leading-relaxed">
+            {fortune.avoid.map((item) => (
+              <li key={item}>{item}</li>
+            ))}
+          </ul>
+        </section>
+      </div>
 
       <details className="text-sm text-muted">
         <summary className="cursor-pointer select-none">

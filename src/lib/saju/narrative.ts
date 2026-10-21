@@ -56,7 +56,7 @@ const FIT = {
 };
 
 const YONGSIN = [
-  "게다가 오늘 기운에 당신을 돕는 {y}{k}이 섞여 있어 뜻밖의 도움을 기대해도 좋아요.",
+  "게다가 오늘 기운에 당신을 돕는 {k} {y} 기운이 섞여 있어 뜻밖의 도움을 기대해도 좋아요.",
   "반갑게도 당신의 {k}인 {y} 기운이 함께해 흐름에 힘을 실어 줘요.",
 ];
 const OVERLOAD = [
@@ -93,7 +93,7 @@ export function buildDailyStory(s: DailySignals, seed: string): string {
   else if (s.overload) sentences.push(pick(OVERLOAD, `${seed}:over`));
 
   sentences.push(
-    s.best.stars - s.worst.stars >= 2
+    s.best.stars - s.worst.stars >= 1
       ? fill(pick(CLOSING, `${seed}:close`), { b: s.best.label, w: s.worst.label })
       : pick(CLOSING_EVEN, `${seed}:close`),
   );
@@ -110,11 +110,11 @@ const AVOID_BY_CATEGORY: Record<string, string> = {
 /** 오늘 피하면 좋은 것 2~3가지 — 십신 주의점 + 일지 충 + 별점이 낮은 분야 */
 export function buildAvoidList(s: DailySignals, tenGodCaution: string, lowCategories: string[]): string[] {
   const items = [tenGodCaution];
-  if (s.dayBranch === "충") items.push("이사·계약처럼 큰 결정은 오늘 확정하지 않기");
+  if (s.dayBranch === "충") items.push("이사·계약처럼 큰 결정은 오늘 확정하지 마세요.");
   for (const label of lowCategories) {
     if (items.length >= 3) break;
-    if (AVOID_BY_CATEGORY[label]) items.push(`${AVOID_BY_CATEGORY[label]}는 미뤄 두기`);
+    if (AVOID_BY_CATEGORY[label]) items.push(`${attach(AVOID_BY_CATEGORY[label], "은/는")} 미뤄 두세요.`);
   }
-  if (s.overload && items.length < 3) items.push("한꺼번에 여러 일을 벌이기");
+  if (s.overload && items.length < 3) items.push("한꺼번에 여러 일을 벌이지 마세요.");
   return items;
 }
