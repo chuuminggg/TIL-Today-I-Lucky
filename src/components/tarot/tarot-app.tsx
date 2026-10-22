@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import { todayKST } from "@/lib/calendar/kst";
+import { recordReading } from "@/lib/journal/storage";
 import {
   clearHistory,
   parseHistory,
@@ -12,6 +14,7 @@ import {
   type HistoryEntry,
 } from "@/lib/tarot/history";
 import type { Reading, ReadingRequest } from "@/lib/tarot/interpret";
+import { shareQuery } from "@/lib/tarot/share";
 import { loadTarotSettings, saveTarotSettings } from "@/lib/tarot/settings";
 import { SPREADS, spreadsForTopic, TOPIC_IDS, TOPICS, type Spread, type Topic } from "@/lib/tarot/spreads";
 import { CardFan } from "./card-fan";
@@ -282,7 +285,11 @@ export function TarotApp({ initial }: { initial?: { topic: Topic; spreadId?: str
     setStep({ name: "loading" });
     try {
       const reading = await requestReading(request);
-      if (!fromHistory) saveToHistory(reading, historyTitle(reading.topic, reading.spread.name));
+      if (!fromHistory) {
+        const title = historyTitle(reading.topic, reading.spread.name);
+        saveToHistory(reading, title);
+        recordReading(todayKST(), { title, summary: reading.summary.title, query: shareQuery(reading) });
+      }
       setStep({ name: "result", reading, initiallyRevealed: fromHistory });
     } catch (e) {
       setError(e instanceof Error ? e.message : "타로를 해석하지 못했어요.");

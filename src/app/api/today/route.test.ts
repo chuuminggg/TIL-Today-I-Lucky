@@ -38,4 +38,13 @@ describe("POST /api/today", () => {
     expect(res.status).toBe(400);
     expect((await res.json()).error).toContain("음력");
   });
+
+  it("지난 날짜는 그날의 운세를, 미래 날짜는 400", async () => {
+    const me = { calendar: "solar", birthDate: "1990-03-15", gender: "male" };
+    const past = await post({ ...me, date: "2026-01-01" });
+    expect(past.status).toBe(200);
+    expect(((await past.json()) as TodayReading).date).toBe("2026-01-01");
+    expect((await post({ ...me, date: "2999-01-01" })).status).toBe(400);
+    expect((await post({ ...me, date: "어제" })).status).toBe(400);
+  });
 });

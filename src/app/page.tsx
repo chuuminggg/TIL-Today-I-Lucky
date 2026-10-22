@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { connection } from "next/server";
 import { TodayApp } from "@/components/today-app";
-import { todayKST } from "@/lib/calendar/lunar";
+import { todayKST } from "@/lib/calendar/kst";
 
 const WEEKDAYS = ["일", "월", "화", "수", "목", "금", "토"];
 
@@ -9,6 +9,7 @@ const NAV = [
   { href: "/tarot", label: "🔮 타로" },
   { href: "/saju", label: "🧭 내 사주" },
   { href: "/compat", label: "💞 궁합" },
+  { href: "/calendar", label: "📅 기록" },
 ];
 
 export default async function Home() {
@@ -26,7 +27,7 @@ export default async function Home() {
           </p>
           <h1 className="text-2xl font-bold">Today I Lucky 🍀</h1>
         </div>
-        <nav aria-label="더 보기" className="grid grid-cols-3 gap-1.5 text-center text-sm font-medium">
+        <nav aria-label="더 보기" className="grid grid-cols-4 gap-1.5 text-center text-sm font-medium">
           {NAV.map(({ href, label }) => (
             <Link key={href} href={href} className="rounded-full bg-accent-soft px-2 py-1.5 text-accent">
               {label}
