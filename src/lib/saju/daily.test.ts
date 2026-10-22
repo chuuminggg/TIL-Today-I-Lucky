@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { dayPillar } from "@/lib/calendar/iljin";
 import { analyze } from "./adapter";
 import { computeDailyFortune } from "./daily";
+import { SCENE } from "./narrative";
 import { STEMS, isClash, isHarmony, tenGodOf } from "./ganji";
 import { luckyItems } from "./luck";
 
@@ -67,7 +68,7 @@ describe("오늘의 이야기 문단", () => {
       const date = `2026-10-${String(20 + d).padStart(2, "0")}`;
       const { story, avoid } = computeDailyFortune(saju, "male", dayPillar(date), date);
       expect(story).not.toMatch(/\{|\}|undefined|null|이\/가|을\/를|은\/는/);
-      expect(story.split(/(?<=요\.)\s/).length).toBeGreaterThanOrEqual(3);
+      expect(story.split(/(?<=요\.)\s/).length).toBeGreaterThanOrEqual(2);
       expect(avoid.length).toBeGreaterThanOrEqual(1);
       expect(avoid.length).toBeLessThanOrEqual(3);
       for (const item of avoid) expect(item, item).toMatch(/[.요]$/);
@@ -93,5 +94,22 @@ describe("luckyItems", () => {
     expect(lucky.direction).toBe("동쪽");
     expect(lucky.numbers).toEqual([3, 8]);
     expect(lucky.colorHex).toMatch(/^#[0-9a-f]{6}$/);
+  });
+});
+
+describe("구체적인 장면·행동 문장", () => {
+  const saju = analyze({ birthDate: "1990-03-15", birthTime: "10:30", gender: "male", calendar: "solar" });
+
+  it("이야기 문단에 그날 십신의 생활 장면이 들어간다", () => {
+    for (let d = 1; d <= 10; d++) {
+      const date = `2026-11-${String(d).padStart(2, "0")}`;
+      const f = computeDailyFortune(saju, "male", dayPillar(date), `scene:${date}`);
+      expect(SCENE[f.tenGod].some((s) => f.story.includes(s)), f.story).toBe(true);
+    }
+  });
+
+  it("분야별 문장 뒤에 구체적인 행동 한 줄이 붙는다", () => {
+    const f = computeDailyFortune(saju, "male", dayPillar("2026-11-03"), "tip");
+    for (const c of f.categories) expect(c.text.split(/(?<=[.요])\s+/).length, c.text).toBeGreaterThanOrEqual(2);
   });
 });

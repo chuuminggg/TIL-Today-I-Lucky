@@ -2,7 +2,8 @@ import { describe, expect, it } from "vitest";
 import { cardById, TAROT_DECK } from "./cards";
 import { PHRASES } from "./data/phrases";
 import { interpretReading } from "./interpret";
-import { BY_LENS, BY_POSITION, buildStory, CONNECTORS as CONNECTOR_GROUPS, render, WEEK, type StoryCard, type Templates } from "./narrative";
+import { BY_LENS, BY_POSITION, buildStory, CONNECTORS as CONNECTOR_GROUPS, render, sceneSentence, WEEK, type StoryCard, type Templates } from "./narrative";
+import { SCENES } from "./data/scenes";
 import { SPREADS, spreadById } from "./spreads";
 
 /** 스프레드 자리에 원하는 카드를 직접 놓는다 — "cups-5" 는 정방향, "cups-5r" 는 역방향 */
@@ -135,5 +136,36 @@ describe("buildStory — 문장 규칙", () => {
     // 희망과 두려움 문장 앞에는 "다행히" 같은 연결어를 붙이지 않는다
     const hope = story.split(/(?<=요\.)\s/).find((x) => /두려|겁내|걱정/.test(x))!;
     expect(CONNECTORS.some((c) => hope.startsWith(`${c} `))).toBe(false);
+  });
+});
+
+describe("생활 장면 문장", () => {
+  it("영역 × 수트 × 밝음·어두움마다 2개 이상, 모두 문장으로 끝난다", () => {
+    const all = Object.values(SCENES).flatMap((area) => Object.values(area).flatMap((suit) => Object.values(suit)));
+    expect(all).toHaveLength(6 * 4 * 2);
+    for (const variants of all) {
+      expect(variants.length).toBeGreaterThanOrEqual(2);
+      for (const s of variants) expect(s, s).toMatch(/요\.$/);
+    }
+    const flat = all.flat();
+    expect(new Set(flat).size).toBe(flat.length);
+  });
+
+  it("이야기 문단 끝에 주제에 맞는 장면이 붙는다", () => {
+    const picks = [0, 1, 2];
+    const love = interpretReading({ topic: "love", spreadId: "three-time", seed: "scene-seed", picks });
+    const money = interpretReading({ topic: "money", spreadId: "three-time", seed: "scene-seed", picks });
+    expect(love.story).toMatch(/(현실에서는|구체적으로는) [^.]*요\.$/);
+    expect(money.story).toMatch(/(돈 문제에서는|구체적으로는) [^.]*요\.$/);
+    expect(love.story).not.toBe(money.story);
+  });
+
+  it("밝은 결론 카드에는 밝은 장면, 어두운 카드에는 어두운 장면", () => {
+    const sun = cardById("major-19")!;
+    const bright = SCENES.daily.wands.bright; // 태양은 불 원소 → 완드
+    const dim = SCENES.daily.wands.dim;
+    expect(bright).toContain(sceneSentence("today", { card: sun, reversed: false }, "x"));
+    const tower = cardById("major-16")!;
+    expect(dim).toContain(sceneSentence("free", { card: tower, reversed: false }, "x"));
   });
 });
