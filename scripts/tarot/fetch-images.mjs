@@ -1,5 +1,6 @@
 // Wikimedia Commons의 라이더-웨이트-스미스(1909, 퍼블릭 도메인) 스캔 78장을 받아
-// public/tarot/rws/{slug}.webp 로 변환한다.
+// public/tarot/rws/{slug}.webp 로 변환한다. 공유 미리보기 이미지(Satori)는 WebP를 못 읽어서
+// 작은 JPG도 public/tarot/og/{slug}.jpg 로 함께 만든다.
 //
 //   node scripts/tarot/fetch-images.mjs          # 없는 파일만 받기
 //   node scripts/tarot/fetch-images.mjs --force  # 전부 다시 받기
@@ -14,7 +15,9 @@ import sharp from "sharp";
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const RAW_DIR = path.join(ROOT, "assets/tarot/raw");
 const OUT_DIR = path.join(ROOT, "public/tarot/rws");
+const OG_DIR = path.join(ROOT, "public/tarot/og");
 const WIDTH = 480; // 화면 최대 약 240px × 2배 밀도 — 종이 질감 때문에 용량이 커서 이 이상은 비효율
+const OG_WIDTH = 240; // 공유 이미지(1200×630)에서 150px 남짓으로 그린다
 const FETCH_WIDTH = 960; // Commons 표준 썸네일 크기
 const USER_AGENT = "TIL-Today-I-Lucky/0.1 (tarot image import script)";
 const force = process.argv.includes("--force");
@@ -71,8 +74,11 @@ async function download(url, dest) {
 
 await mkdir(RAW_DIR, { recursive: true });
 await mkdir(OUT_DIR, { recursive: true });
+await mkdir(OG_DIR, { recursive: true });
 
-const todo = CARDS.filter(({ slug }) => force || !existsSync(path.join(OUT_DIR, `${slug}.webp`)));
+const webpPath = (slug) => path.join(OUT_DIR, `${slug}.webp`);
+const ogPath = (slug) => path.join(OG_DIR, `${slug}.jpg`);
+const todo = CARDS.filter(({ slug }) => force || !existsSync(webpPath(slug)) || !existsSync(ogPath(slug)));
 console.log(`${todo.length}/${CARDS.length}장 처리`);
 
 for (let i = 0; i < todo.length; i += 50) {
@@ -84,7 +90,8 @@ for (let i = 0; i < todo.length; i += 50) {
       await download(urls[j], raw);
       await new Promise((r) => setTimeout(r, 300)); // Commons에 부담을 주지 않도록 천천히
     }
-    await sharp(raw).resize({ width: WIDTH }).webp({ quality: 70 }).toFile(path.join(OUT_DIR, `${card.slug}.webp`));
+    await sharp(raw).resize({ width: WIDTH }).webp({ quality: 70 }).toFile(webpPath(card.slug));
+    await sharp(raw).resize({ width: OG_WIDTH }).jpeg({ quality: 72, mozjpeg: true }).toFile(ogPath(card.slug));
     console.log(`✓ ${card.slug}`);
   }
 }

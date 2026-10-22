@@ -6,20 +6,23 @@ import { direction, type Reading } from "@/lib/tarot/interpret";
 import { TOPICS } from "@/lib/tarot/spreads";
 import { AskAi } from "./ask-ai";
 import { CardBack, CardFront } from "./card-face";
+import { ShareButton } from "./share-button";
 
 const VERDICT_STYLE = { yes: "text-emerald-600 dark:text-emerald-400", maybe: "text-gold", no: "text-rose-600 dark:text-rose-400" } as const;
+
+type Actions =
+  | { shared?: false; onRetry: () => void; onHome: () => void }
+  // 공유 주소(/tarot/r)로 연 결과 — 받은 사람에게 같은 주제로 직접 보기를 권한다
+  | { shared: true };
 
 export function ReadingResult({
   reading,
   initiallyRevealed,
-  onRetry,
-  onHome,
+  ...actions
 }: {
   reading: Reading;
   initiallyRevealed: boolean;
-  onRetry: () => void;
-  onHome: () => void;
-}) {
+} & Actions) {
   const total = reading.cards.length;
   const [revealed, setRevealed] = useState(initiallyRevealed ? total : 0);
   const done = revealed >= total;
@@ -114,14 +117,35 @@ export function ReadingResult({
 
           <AskAi reading={reading} />
 
-          <div className="grid grid-cols-2 gap-2">
-            <button type="button" onClick={onRetry} className="rounded-xl border border-border py-3 text-sm font-medium">
-              같은 주제로 다시 보기
-            </button>
-            <button type="button" onClick={onHome} className="rounded-xl bg-accent py-3 text-sm font-medium text-white dark:text-background">
-              다른 주제 보기
-            </button>
-          </div>
+          {actions.shared ? (
+            <div className="grid grid-cols-2 gap-2">
+              <Link href="/" className="rounded-xl border border-border py-3 text-center text-sm font-medium">
+                오늘의 운세 보기
+              </Link>
+              <Link
+                href={`/tarot?topic=${reading.topic}&spread=${reading.spread.id}`}
+                className="rounded-xl bg-accent py-3 text-center text-sm font-medium text-white dark:text-background"
+              >
+                나도 이 주제로 보기
+              </Link>
+            </div>
+          ) : (
+            <>
+              <ShareButton reading={reading} />
+              <div className="grid grid-cols-2 gap-2">
+                <button type="button" onClick={actions.onRetry} className="rounded-xl border border-border py-3 text-sm font-medium">
+                  같은 주제로 다시 보기
+                </button>
+                <button
+                  type="button"
+                  onClick={actions.onHome}
+                  className="rounded-xl bg-accent py-3 text-sm font-medium text-white dark:text-background"
+                >
+                  다른 주제 보기
+                </button>
+              </div>
+            </>
+          )}
         </>
       )}
     </div>

@@ -19,7 +19,7 @@ import { ReadingResult } from "./reading-result";
 
 type Step =
   | { name: "topic" }
-  | { name: "setup"; topic: Topic }
+  | { name: "setup"; topic: Topic; spreadId?: string }
   | { name: "pick"; topic: Topic; question: string; spread: Spread; allowReversed: boolean; seed: string }
   | { name: "loading" }
   | { name: "result"; reading: Reading; initiallyRevealed: boolean };
@@ -151,19 +151,22 @@ function TopicStep({ onSelect, onOpen }: { onSelect: (topic: Topic) => void; onO
 
 function SetupStep({
   topic,
+  initialSpreadId,
   onBack,
   onStart,
   onOpen,
 }: {
   topic: Topic;
+  initialSpreadId?: string;
   onBack: () => void;
   onStart: (options: { question: string; spread: Spread; allowReversed: boolean }) => void;
   onOpen: (entry: HistoryEntry) => void;
 }) {
   const recommended = spreadsForTopic(topic);
   const [question, setQuestion] = useState("");
-  const [spreadId, setSpreadId] = useState(recommended[0].id);
-  const [showAll, setShowAll] = useState(false);
+  const [spreadId, setSpreadId] = useState(initialSpreadId ?? recommended[0].id);
+  // 공유 링크로 들어온 스프레드가 추천 목록에 없으면 전체 목록을 펼쳐 둔다
+  const [showAll, setShowAll] = useState(() => !!initialSpreadId && !recommended.some((s) => s.id === initialSpreadId));
   // 설정 화면은 주제를 고른 뒤에만 그려지므로(서버 렌더 없음) 기기 저장값을 바로 읽어도 된다
   const [allowReversed, setAllowReversed] = useState(() => loadTarotSettings().allowReversed);
   const [openedAt] = useState(() => Date.now());
@@ -270,8 +273,8 @@ function SetupStep({
   );
 }
 
-export function TarotApp() {
-  const [step, setStep] = useState<Step>({ name: "topic" });
+export function TarotApp({ initial }: { initial?: { topic: Topic; spreadId?: string } }) {
+  const [step, setStep] = useState<Step>(initial ? { name: "setup", ...initial } : { name: "topic" });
   const [error, setError] = useState<string | null>(null);
 
   async function show(request: ReadingRequest, fromHistory: boolean) {
@@ -303,6 +306,7 @@ export function TarotApp() {
       {step.name === "setup" && (
         <SetupStep
           topic={step.topic}
+          initialSpreadId={step.spreadId}
           onBack={() => setStep({ name: "topic" })}
           onOpen={(entry) => show(entry.request, true)}
           onStart={(options) => setStep({ name: "pick", topic: step.topic, seed: crypto.randomUUID(), ...options })}

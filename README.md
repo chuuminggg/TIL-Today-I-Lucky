@@ -19,7 +19,7 @@ npm run dev                  # http://localhost:3000
 | `npm run typecheck` | 라우트 타입 생성(`next typegen`) 후 `tsc --noEmit` — CI용. 개발 서버와 같은 `.next/dev/types`를 덮어쓰므로 개발 서버를 켠 채로는 쓰지 않기 |
 | `npm run typecheck:src` | `tsc --noEmit`만 — 개발 서버를 켠 채 타입 검사할 때 (라우트 타입은 개발 서버가 만들어 둔 것 사용) |
 | `npm run lint` | ESLint |
-| `node scripts/tarot/fetch-images.mjs` | 타로 카드 이미지(Wikimedia Commons, 퍼블릭 도메인) 받기 → `public/tarot/rws/` |
+| `node scripts/tarot/fetch-images.mjs` | 타로 카드 이미지(Wikimedia Commons, 퍼블릭 도메인) 받기 → `public/tarot/rws/`(화면용 WebP), `public/tarot/og/`(공유 이미지용 JPG) |
 
 ## 배포
 
@@ -39,7 +39,9 @@ src/
     not-found.tsx, error.tsx, loading.tsx  404·오류·불러오는 중 화면
     tarot/page.tsx       타로 상세 운세 (주제 → 스프레드 → 카드 고르기 → 해석)
     saju/page.tsx        사주 상세 풀이 (명식 표·오행·용신·십신·주제별·대운·세운)
-    compat/page.tsx      사주 궁합 (관계 유형 → 상대 입력 → 궁합)
+    compat/page.tsx      사주 궁합 (관계 유형 → 상대 입력 → 궁합), 공유 주소(?a=&b=&s=&r=)면 미리보기만 결과로
+    tarot/r/page.tsx     공유받은 타로 결과 — 주소(seed·고른 자리)로 서버에서 다시 해석, 검색 제외
+    og/tarot/, og/compat/  공유 미리보기 이미지(ImageResponse) — 카드 그림은 public/tarot/og/*.jpg
     tarot/cards/         카드 사전 — 목록 + 78장 상세(빌드 때 정적 생성)
     api/today/route.ts   POST: 오늘의 운세 + 행운 요소 + 타로
     api/tarot/reading/   POST: 스프레드 해석 (seed + 고른 자리 → 결과, 재현 가능)
