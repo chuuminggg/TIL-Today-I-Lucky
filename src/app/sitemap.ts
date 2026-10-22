@@ -8,6 +8,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: absoluteUrl("/tarot"), changeFrequency: "weekly", priority: 0.9 },
     { url: absoluteUrl("/saju"), changeFrequency: "monthly", priority: 0.8 },
     { url: absoluteUrl("/compat"), changeFrequency: "monthly", priority: 0.8 },
+    { url: absoluteUrl("/naming"), changeFrequency: "monthly", priority: 0.7 },
     { url: absoluteUrl("/tarot/cards"), changeFrequency: "monthly", priority: 0.8 },
     ...TAROT_DECK.map((card) => ({
       url: absoluteUrl(`/tarot/cards/${card.slug}`),
