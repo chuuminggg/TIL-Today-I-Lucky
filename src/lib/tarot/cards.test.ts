@@ -72,8 +72,10 @@ describe("TAROT_DECK 데이터", () => {
     expect(cardById("pentacles-3")?.element).toBe("earth");
   });
 
-  it("모든 카드에 이미지가 있다 (public/tarot/rws/{slug}.webp)", () => {
-    const missing = TAROT_DECK.filter((c) => !existsSync(path.join(process.cwd(), "public/tarot/rws", `${c.slug}.webp`)));
+  it("모든 카드에 이미지가 있다 (public/tarot/rws/{slug}.webp, 공유 이미지용 public/tarot/og/{slug}.jpg)", () => {
+    const missing = TAROT_DECK.filter((c) =>
+      [`rws/${c.slug}.webp`, `og/${c.slug}.jpg`].some((file) => !existsSync(path.join(process.cwd(), "public/tarot", file))),
+    );
     expect(missing.map((c) => c.slug)).toEqual([]);
   });
 

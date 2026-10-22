@@ -2,9 +2,11 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { RELATION_TYPES } from "@/lib/saju/detail-text";
 import type { CompatDetail, CompatPerson } from "@/lib/saju/compat";
+import { compatShareQuery } from "@/lib/saju/compat-share";
+import { RELATION_TYPES } from "@/lib/saju/detail-text";
 import { buildCompatPrompt } from "@/lib/saju/prompt";
+import { shareOrCopy } from "@/lib/share";
 import { AskAi } from "../ask-ai";
 import { ELEMENT_TEXT } from "./element-style";
 
@@ -42,24 +44,19 @@ function List({ title, items, mark }: { title: string; items: string[]; mark: st
   );
 }
 
-/** 공유에는 닉네임·점수·한 줄만 — 생년월일은 넣지 않고, 링크는 결과가 아닌 궁합 시작 화면 */
+/** 공유에는 닉네임·점수·관계만 — 생년월일은 넣지 않고, 링크는 결과가 아닌 궁합 시작 화면(미리보기 이미지에 점수) */
 function ShareButton({ detail }: { detail: CompatDetail }) {
   const [message, setMessage] = useState<string | null>(null);
   const [a, b] = detail.people;
 
   async function share() {
-    const url = `${window.location.origin}/compat`;
+    const query = compatShareQuery({ a: a.nickname, b: b.nickname, score: detail.score, relation: detail.relation });
+    const url = `${window.location.origin}/compat?${query}`;
     const text = `${a.nickname} 💞 ${b.nickname} ${RELATION_TYPES[detail.relation].label} 궁합 ${detail.score}점 — ${detail.headline}. 나도 궁합 보기 👉`;
     try {
-      if (navigator.share) {
-        await navigator.share({ title: "TIL 궁합", text, url });
-        return;
-      }
-      await navigator.clipboard.writeText(`${text} ${url}`);
-      setMessage("공유 문구를 복사했어요. 생년월일은 들어가지 않아요.");
-    } catch (error) {
-      // 사용자가 공유 창을 닫은 경우는 조용히 넘어간다
-      if (error instanceof DOMException && error.name === "AbortError") return;
+      const result = await shareOrCopy({ title: "TIL 궁합", text, url });
+      if (result === "copied") setMessage("공유 문구를 복사했어요. 생년월일은 들어가지 않아요.");
+    } catch {
       setMessage("공유하지 못했어요.");
     }
   }
