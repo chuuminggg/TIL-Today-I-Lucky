@@ -163,6 +163,27 @@ declare module "naming-house" {
     sources: string[];
   }
 
+  /** 입력 검증·정리 — 성씨·이름은 한글 1–3자, 한자는 CJK 문자만 */
+  export interface NormalizedNamingInput {
+    surname: string;
+    surnameHanja?: string;
+    preferences: NamingInput["preferences"] & { maxCandidates: number; avoidSyllables: string[]; preferredSyllables: string[]; preferredElements: Element[] };
+    candidates: Array<NameCandidate & { tags: string[]; index: number }>;
+  }
+
+  /** scoreNameCandidate가 읽는 맥락 — buildNamingContext 대신 보정된 명식으로 직접 만든다 */
+  export interface NamingContext {
+    input: Pick<NormalizedNamingInput, "surname" | "surnameHanja" | "preferences">;
+    neededElements: Element[];
+    limitations: string[];
+    sources: string[];
+  }
+
+  export function normalizeNamingInput(input: NamingInput): NormalizedNamingInput;
+  export function scoreNameCandidate(
+    candidate: NormalizedNamingInput["candidates"][number],
+    context: NamingContext,
+  ): Promise<NameRecommendation & { limitations: string[]; strokeProfile: { available: boolean } }>;
   export function recommendNames(input: NamingInput, options?: Record<string, unknown>): Promise<NamingResult>;
   export function getMissingNamingFields(input: Partial<NamingInput>): string[];
   export function callNamingHouseTool(name: string, args: Record<string, unknown>): Promise<unknown>;

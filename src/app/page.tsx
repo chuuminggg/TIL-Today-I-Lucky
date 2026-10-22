@@ -7,8 +7,9 @@ const WEEKDAYS = ["일", "월", "화", "수", "목", "금", "토"];
 
 const NAV = [
   { href: "/tarot", label: "🔮 타로" },
-  { href: "/saju", label: "🧭 내 사주" },
+  { href: "/saju", label: "🧭 사주" },
   { href: "/compat", label: "💞 궁합" },
+  { href: "/naming", label: "✍️ 작명" },
   { href: "/calendar", label: "📅 기록" },
 ];
 
@@ -27,9 +28,9 @@ export default async function Home() {
           </p>
           <h1 className="text-2xl font-bold">Today I Lucky 🍀</h1>
         </div>
-        <nav aria-label="더 보기" className="grid grid-cols-4 gap-1.5 text-center text-sm font-medium">
+        <nav aria-label="더 보기" className="grid grid-cols-5 gap-1 text-center text-sm font-medium">
           {NAV.map(({ href, label }) => (
-            <Link key={href} href={href} className="rounded-full bg-accent-soft px-2 py-1.5 text-accent">
+            <Link key={href} href={href} className="whitespace-nowrap rounded-full bg-accent-soft px-1 py-1.5 text-accent">
               {label}
             </Link>
           ))}
