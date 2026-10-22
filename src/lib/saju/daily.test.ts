@@ -58,6 +58,35 @@ describe("computeDailyFortune", () => {
   });
 });
 
+describe("오늘의 이야기 문단", () => {
+  const saju = analyze({ birthDate: "1990-03-15", birthTime: "10:30", gender: "male", calendar: "solar" });
+
+  it("7일 연속 매일 다르게 읽히고, 빈칸·조사 미처리가 없다", () => {
+    const stories = new Set<string>();
+    for (let d = 1; d <= 7; d++) {
+      const date = `2026-10-${String(20 + d).padStart(2, "0")}`;
+      const { story, avoid } = computeDailyFortune(saju, "male", dayPillar(date), date);
+      expect(story).not.toMatch(/\{|\}|undefined|null|이\/가|을\/를|은\/는/);
+      expect(story.split(/(?<=요\.)\s/).length).toBeGreaterThanOrEqual(3);
+      expect(avoid.length).toBeGreaterThanOrEqual(1);
+      expect(avoid.length).toBeLessThanOrEqual(3);
+      for (const item of avoid) expect(item, item).toMatch(/[.요]$/);
+      expect(avoid.join(" "), "조사").not.toMatch(/[고증정]는 /);
+      stories.add(story);
+    }
+    expect(stories.size).toBe(7);
+  });
+
+  it("1년 내내 문장 규칙을 지킨다", () => {
+    for (let d = 0; d < 365; d++) {
+      const date = new Date(Date.UTC(2026, 0, 1 + d)).toISOString().slice(0, 10);
+      const { story } = computeDailyFortune(saju, "male", dayPillar(date), date);
+      expect(story, date).not.toMatch(/\{|\}|undefined/);
+      expect(story.length, date).toBeLessThanOrEqual(300);
+    }
+  });
+});
+
 describe("luckyItems", () => {
   it("오행별 행운 요소", () => {
     const lucky = luckyItems("wood", "2026-09-24");

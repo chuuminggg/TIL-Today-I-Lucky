@@ -1,6 +1,7 @@
 import type { Element, Gender, SajuAnalysis } from "saju-fortune";
 import type { DayPillar } from "@/lib/calendar/iljin";
 import { pick, seededRandom } from "@/lib/random";
+import { buildAvoidList, buildDailyStory, type DailySignals } from "./narrative";
 import { BRANCHES, TEN_GOD_GROUP, isClash, isHarmony, tenGodOf, type TenGod, type TenGodGroup } from "./ganji";
 
 export type Category = "love" | "wealth" | "career" | "health";
@@ -19,6 +20,10 @@ export interface DailyFortune {
   summary: string;
   advice: string;
   caution: string;
+  /** 십신·용신·합충·분야 별점을 엮은 3~4문장 — 날마다 다르게 읽힌다 */
+  story: string;
+  /** 오늘 피하면 좋은 것 2~3가지 */
+  avoid: string[];
   categories: CategoryFortune[];
   /** 점수 근거 — 화면의 "왜 이런 점수?" 및 Phase 3 LLM 프롬프트 입력으로 사용 */
   factors: string[];
@@ -154,14 +159,19 @@ export function computeDailyFortune(
   factors.push(`오늘 천간 ${today.stem.ko}(${today.stem.hanja})은 내 일간에게 ${tenGod} (${affinity >= 0 ? "+" : ""}${affinity})`);
 
   const todayElements: Element[] = [today.stem.element, today.branch.element];
+  let yongsinHit: DailySignals["yongsin"] = null;
+  let overload = false;
   for (const element of todayElements) {
     if (element === saju.yongsin.primary) {
+      yongsinHit = { label: saju.yongsin.primaryKo, kind: "용신" };
       score += 8;
       factors.push(`오늘 기운에 용신 ${saju.yongsin.primaryKo}이 있음 (+8)`);
     } else if (element === saju.yongsin.secondary) {
+      yongsinHit ??= { label: saju.yongsin.secondaryKo, kind: "희신" };
       score += 4;
       factors.push(`오늘 기운에 희신 ${saju.yongsin.secondaryKo}이 있음 (+4)`);
     } else if (saju.dominantElements.includes(element)) {
+      overload = true;
       score -= 4;
       factors.push(`이미 강한 오행이 더해짐 (-4)`);
     }
@@ -209,6 +219,18 @@ export function computeDailyFortune(
   });
 
   const text = TEN_GOD_TEXT[tenGod];
+  const ranked = [...categories].sort((a, b) => b.stars - a.stars);
+  const signals: DailySignals = {
+    tenGod,
+    affinity,
+    strength: dm.strength,
+    yongsin: yongsinHit,
+    overload,
+    dayBranch: dayBranchClash ? "충" : dayBranchHarmony ? "합" : null,
+    best: { label: ranked[0].label, stars: ranked[0].stars },
+    worst: { label: ranked.at(-1)!.label, stars: ranked.at(-1)!.stars },
+  };
+  const low = categories.filter((c) => c.stars <= 2).map((c) => c.label);
   return {
     score,
     tenGod,
@@ -216,6 +238,8 @@ export function computeDailyFortune(
     summary: text.summary,
     advice: text.advice,
     caution: text.caution,
+    story: buildDailyStory(signals, seed),
+    avoid: buildAvoidList(signals, text.caution, low),
     categories,
     factors,
   };
