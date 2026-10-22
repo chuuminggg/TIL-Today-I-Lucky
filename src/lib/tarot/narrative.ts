@@ -1,9 +1,10 @@
 import { attach } from "@/lib/josa";
 import { hashString } from "@/lib/random";
 import { PHRASES } from "./data/phrases";
+import { SCENES, type SceneArea } from "./data/scenes";
 import { cardScore } from "./scoring";
-import type { Lens, SpreadPosition } from "./spreads";
-import type { TarotCard } from "./types";
+import type { Lens, SpreadPosition, Topic } from "./spreads";
+import type { Element, Suit, TarotCard } from "./types";
 
 export interface StoryCard {
   position: SpreadPosition;
@@ -290,4 +291,25 @@ export function buildStory(spreadId: string, cards: StoryCard[], seed: string): 
   if (spreadId === "week") return weekStory(cards, seed);
   if (spreadId === "choice") return choiceStory(cards, seed);
   return sequenceStory(spreadId, cards, seed);
+}
+
+const SCENE_AREA: Record<Topic, SceneArea> = {
+  today: "daily",
+  free: "daily",
+  yesno: "daily",
+  love: "love",
+  crush: "love",
+  reunion: "love",
+  career: "work",
+  study: "study",
+  money: "money",
+  relationship: "people",
+};
+const ELEMENT_SUIT: Record<Element, Suit> = { fire: "wands", water: "cups", air: "swords", earth: "pentacles" };
+
+/** 결론 카드를 주제에 맞는 생활 장면 한 문장으로 — 이야기 문단 끝에 붙여 구체적으로 읽히게 */
+export function sceneSentence(topic: Topic, { card, reversed }: Pick<StoryCard, "card" | "reversed">, seed: string): string {
+  const suit = card.suit ?? ELEMENT_SUIT[card.element];
+  const tone = cardScore(card, reversed) > 0 ? "bright" : "dim";
+  return pick(SCENES[SCENE_AREA[topic]][suit][tone], `${seed}:scene`);
 }

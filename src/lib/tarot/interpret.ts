@@ -1,7 +1,7 @@
 import { josa } from "@/lib/josa";
 import { RANK_INFO, SUITS } from "./data/minor";
 import { ELEMENT_LABEL } from "./labels";
-import { buildStory } from "./narrative";
+import { buildStory, sceneSentence } from "./narrative";
 import { cardScore } from "./scoring";
 import { pickCards, type DrawnCard } from "./draw";
 import { spreadById, type Lens, type SpreadPosition, type Topic } from "./spreads";
@@ -265,7 +265,7 @@ export function interpretReading(request: ReadingRequest): Reading {
     allowReversed,
     cards,
     insights: analyze(drawn, positions, spread.id),
-    story: buildStory(spread.id, cards, request.seed),
+    story: `${buildStory(spread.id, cards, request.seed)} ${sceneSentence(request.topic, key, request.seed)}`,
     verdict: wantsVerdict ? verdictOf(drawn, positions) : undefined,
     summary: {
       title: `${key.position.label} · ${key.card.name} ${direction(key.reversed)}`,

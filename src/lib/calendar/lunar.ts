@@ -25,7 +25,4 @@ export function lunarToSolar(lunar: DateParts, isLeapMonth = false): string {
   return formatDate(calendar.getSolarCalendar());
 }
 
-/** 한국 표준시(KST) 기준 오늘 날짜 YYYY-MM-DD */
-export function todayKST(now: Date = new Date()): string {
-  return new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Seoul" }).format(now);
-}
+export { todayKST } from "./kst";

@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { lunarToSolar, parseDate, todayKST } from "./lunar";
+import { hourKST } from "./kst";
 
 describe("lunarToSolar", () => {
   it("평달 음력을 양력으로 변환한다", () => {
@@ -26,5 +27,12 @@ describe("todayKST", () => {
   it("UTC 15시 이후는 KST 기준 다음 날", () => {
     expect(todayKST(new Date("2026-09-24T15:30:00Z"))).toBe("2026-09-25");
     expect(todayKST(new Date("2026-09-24T14:59:00Z"))).toBe("2026-09-24");
+  });
+});
+
+describe("hourKST", () => {
+  it("UTC 15시는 KST 0시, UTC 9시는 KST 18시", () => {
+    expect(hourKST(new Date("2026-10-21T15:00:00Z"))).toBe(0);
+    expect(hourKST(new Date("2026-10-22T09:30:00Z"))).toBe(18);
   });
 });
