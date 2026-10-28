@@ -1,5 +1,7 @@
 // 카드 사전 "그림 속 상징" — 라이더-웨이트-스미스(1909) 그림의 인물·소품·색이 뜻하는 것.
-// 전통적인 RWS 도상 해석을 바탕으로 직접 작성했다 (외부 사이트 문장 복제 금지). 메이저 22장부터.
+// 전통적인 RWS 도상 해석을 바탕으로 직접 작성했다 (외부 사이트 문장 복제 금지). 마이너 56장은 symbols-minor.ts.
+import { MINOR_SYMBOLS } from "./symbols-minor";
+
 export interface CardSymbol {
   name: string; // 그림 속 요소
   meaning: string; // 그 요소가 뜻하는 것
@@ -158,4 +160,5 @@ export const SYMBOLS: Record<string, CardSymbol[]> = {
     { name: "네 모서리의 존재", meaning: "모든 요소가 제자리를 찾음." },
     { name: "붉은 리본", meaning: "끝없이 이어지는 흐름." },
   ],
+  ...MINOR_SYMBOLS,
 };

@@ -94,8 +94,9 @@ describe("TAROT_DECK 데이터", () => {
 });
 
 describe("그림 속 상징 (카드 사전)", () => {
-  it("메이저 22장 모두 상징이 4개 이상이고, 이름이 겹치지 않는다", () => {
-    for (const card of TAROT_DECK.filter((c) => c.arcana === "major")) {
+  it("78장 모두 상징이 4개 이상이고, 이름이 겹치지 않는다", () => {
+    expect(Object.keys(SYMBOLS)).toHaveLength(78);
+    for (const card of TAROT_DECK) {
       const symbols = SYMBOLS[card.id];
       expect(symbols?.length, card.id).toBeGreaterThanOrEqual(4);
       expect(new Set(symbols.map((s) => s.name)).size, card.id).toBe(symbols.length);
