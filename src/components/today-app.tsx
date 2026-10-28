@@ -106,6 +106,7 @@ function TodayView({ profile, onEdit }: { profile: BirthProfileInput; onEdit: ()
       <LuckyItems lucky={reading.lucky} />
       <TarotCard drawn={reading.tarot} date={reading.date} />
       <AskAi
+        source="today"
         prompts={[buildTodayPrompt(reading), buildTodayPrompt(reading, { compact: true })]}
         description="오늘의 일진과 내 명식, 점수 근거를 담은 상담 프롬프트를 만들어 두었어요. 사용 중인 AI에서 오늘 하루를 더 자세히 물어보세요."
         notice="생년월일시는 빼고 계산된 간지·점수만 선택한 AI 서비스로 전달돼요."

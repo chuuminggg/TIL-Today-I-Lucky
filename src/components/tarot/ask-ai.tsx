@@ -10,6 +10,7 @@ export function AskAi({ reading }: { reading: Reading }) {
   const prompts = useMemo(() => [buildAiPrompt(reading), buildAiPrompt(reading, { compact: true })], [reading]);
   return (
     <AskAiBase
+      source="tarot"
       prompts={prompts}
       description="카드 상징까지 풀어 달라는 상세 프롬프트를 만들어 두었어요. 사용 중인 AI에서 이어서 대화해 보세요."
       notice="질문과 카드 결과가 선택한 AI 서비스로 전달돼요."

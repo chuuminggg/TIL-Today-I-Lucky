@@ -1,5 +1,6 @@
 "use client";
 
+import { track } from "@vercel/analytics";
 import { useMemo, useState } from "react";
 import { AI_TARGETS, aiChatUrl, type AiTarget } from "@/lib/ai-handoff";
 
@@ -23,11 +24,15 @@ function statusText(status: Status): string | null {
   }
 }
 
+/** 어느 화면에서 넘겼는지 — 클릭 집계용 */
+export type AskAiSource = "today" | "tarot" | "saju" | "compat";
+
 /**
  * 결과를 사용자의 ChatGPT·Gemini로 넘겨 더 깊게 물어보기 — 우리 쪽 AI 비용 없음.
  * prompts는 긴 것부터: 첫 번째(전체)는 클립보드에, 주소에 실을 수 있는 첫 프롬프트는 ChatGPT 입력창에.
+ * 버튼 클릭은 Vercel Analytics 커스텀 이벤트(ai_handoff)로 센다 — 요금제가 지원하지 않으면 전송되지 않을 뿐 동작에는 영향 없음.
  */
-export function AskAi({ prompts, description, notice }: { prompts: string[]; description: string; notice: string }) {
+export function AskAi({ prompts, description, notice, source }: { prompts: string[]; description: string; notice: string; source: AskAiSource }) {
   const prompt = prompts[0];
   const links = useMemo(() => ({ chatgpt: aiChatUrl("chatgpt", prompts), gemini: aiChatUrl("gemini", prompts) }), [prompts]);
   const [status, setStatus] = useState<Status>({ kind: "idle" });
@@ -37,6 +42,7 @@ export function AskAi({ prompts, description, notice }: { prompts: string[]; des
 
   function open(target: AiTarget) {
     const { prefilled } = links[target];
+    track("ai_handoff", { target, source, prefilled });
     copy().then(
       () => setStatus({ kind: "opened", target, prefilled, copied: true }),
       () => setStatus({ kind: "opened", target, prefilled, copied: false }),
@@ -67,7 +73,10 @@ export function AskAi({ prompts, description, notice }: { prompts: string[]; des
       </div>
       <button
         type="button"
-        onClick={() => copy().then(() => setStatus({ kind: "copied" }), () => setStatus({ kind: "copy-failed" }))}
+        onClick={() => {
+          track("ai_handoff", { target: "copy", source, prefilled: false });
+          copy().then(() => setStatus({ kind: "copied" }), () => setStatus({ kind: "copy-failed" }));
+        }}
         className="self-center text-sm text-muted underline underline-offset-2"
       >
         프롬프트만 복사
