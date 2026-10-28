@@ -50,7 +50,9 @@ export function InstallHint({ visits }: { visits: number }) {
       <div className="flex-1">
         <p className="font-medium">홈 화면에 추가하면 매일 한 번에 열 수 있어요</p>
         {platform === "ios" ? (
-          <p className="mt-1 text-muted">Safari 아래쪽 공유 버튼(□↑) → &lsquo;홈 화면에 추가&rsquo;를 눌러 주세요.</p>
+          <p className="mt-1 text-muted">
+            Safari 아래쪽 공유 버튼(□↑) → &lsquo;홈 화면에 추가&rsquo;를 눌러 주세요. 추가한 앱에서는 매일 아침 알림도 받을 수 있어요.
+          </p>
         ) : (
           <button
             type="button"
