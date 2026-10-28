@@ -241,6 +241,7 @@ export function SajuDetailView({ detail, name }: { detail: SajuDetail; name?: st
       </Section>
 
       <AskAi
+        source="saju"
         prompts={prompts}
         description="명식·대운·세운을 담은 상담 프롬프트를 만들어 두었어요. 사용 중인 AI에서 궁금한 점을 이어서 물어보세요."
         notice="생년월일시는 빼고 계산된 간지·오행만 선택한 AI 서비스로 전달돼요."

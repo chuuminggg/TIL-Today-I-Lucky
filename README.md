@@ -28,6 +28,18 @@ npm run dev                  # http://localhost:3000
 - 절대 주소(OG 이미지·사이트맵·구조화 데이터)는 Vercel 프로덕션 주소를 자동으로 쓴다. 커스텀 도메인을 붙이면 Vercel 환경 변수에 `NEXT_PUBLIC_SITE_URL`을 넣는다.
 - 방문 통계는 Vercel Web Analytics(`@vercel/analytics`) — Vercel 대시보드의 프로젝트 → Analytics에서 켜야 수집된다.
 - 배포 후 Google Search Console에 `/sitemap.xml` 제출.
+- AI 이어 보기 버튼 클릭은 커스텀 이벤트 `ai_handoff`(target·source)로 보낸다 — Vercel 요금제가 커스텀 이벤트를 지원할 때만 Analytics → Events에 보인다.
+
+### 매일 아침 알림 (웹 푸시)
+
+홈 화면에 추가한 앱(PWA)과 Android Chrome에서 매일 08:00(KST) 알림을 받는다. iPhone·iPad는 iOS 16.4 이상에서 **홈 화면에 추가한 앱**으로만 받을 수 있다.
+
+1. Vercel → Storage(Marketplace) → **Upstash for Redis** 를 만들어 이 프로젝트에 연결 → `KV_REST_API_URL`·`KV_REST_API_TOKEN` 이 자동으로 들어온다.
+2. Vercel → Settings → Environment Variables 에 추가 (값 만들기: `npx web-push generate-vapid-keys`, 비밀값은 아무 긴 임의 문자열)
+   - `NEXT_PUBLIC_VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `VAPID_SUBJECT`(사이트 주소), `CRON_SECRET`
+3. 다시 배포하면 `vercel.json`의 Cron(`0 23 * * *` = 08:00 KST)이 `/api/cron/push`를 부른다.
+
+설정이 없으면 알림 버튼은 화면에서 숨겨진다. 서버에는 구독 주소·암호화 키만 저장하고 생년월일은 보내지 않는다.
 
 ## 구조
 

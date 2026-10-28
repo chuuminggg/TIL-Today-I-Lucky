@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { streakOf } from "@/lib/journal/journal";
+import { readStorage, writeStorage } from "@/lib/local-storage";
 import { recordFortune, useJournal } from "@/lib/journal/storage";
 import { parseProfile, saveProfile, useStoredProfileRaw } from "@/lib/profile/storage";
 import type { BirthProfileInput } from "@/lib/profile/schema";
@@ -11,6 +12,7 @@ import type { TodayReading } from "@/lib/today";
 import { AskAi } from "./ask-ai";
 import { FortuneCard } from "./fortune-card";
 import { InstallHint } from "./journal/install-hint";
+import { PushToggle } from "./journal/push-toggle";
 import { RetroCard } from "./journal/retro-card";
 import { LuckyItems } from "./lucky-items";
 import { OnboardingForm } from "./onboarding-form";
@@ -106,6 +108,7 @@ function TodayView({ profile, onEdit }: { profile: BirthProfileInput; onEdit: ()
       <LuckyItems lucky={reading.lucky} />
       <TarotCard drawn={reading.tarot} date={reading.date} />
       <AskAi
+        source="today"
         prompts={[buildTodayPrompt(reading), buildTodayPrompt(reading, { compact: true })]}
         description="오늘의 일진과 내 명식, 점수 근거를 담은 상담 프롬프트를 만들어 두었어요. 사용 중인 AI에서 오늘 하루를 더 자세히 물어보세요."
         notice="생년월일시는 빼고 계산된 간지·점수만 선택한 AI 서비스로 전달돼요."
@@ -134,7 +137,26 @@ function JournalBar({ today }: { today: string }) {
       </Link>
       <RetroCard journal={journal} today={today} />
       <InstallHint visits={visits} />
+      {visits >= 2 && <PushHint />}
     </>
+  );
+}
+
+const PUSH_HINT_DISMISSED = "til:push-hint-dismissed";
+
+/** 두 번째 방문부터 아침 알림 안내 — 닫으면 다시 안 띄우고, 켜져 있거나 쓸 수 없으면 PushToggle이 숨는다 */
+function PushHint() {
+  // 운세 결과를 받은 뒤에만 렌더링되므로 초기값에서 storage를 읽어도 하이드레이션과 충돌하지 않는다
+  const [dismissed, setDismissed] = useState(() => readStorage(PUSH_HINT_DISMISSED) === "1");
+  if (dismissed) return null;
+  return (
+    <PushToggle
+      compact
+      onDismiss={() => {
+        writeStorage(PUSH_HINT_DISMISSED, "1");
+        setDismissed(true);
+      }}
+    />
   );
 }
 

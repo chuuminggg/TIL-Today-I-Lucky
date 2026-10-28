@@ -19,6 +19,7 @@ import {
 } from "@/lib/journal/journal";
 import { exportBackup, importBackup, recordRetro, useJournal } from "@/lib/journal/storage";
 import { parseProfile, useStoredProfileRaw } from "@/lib/profile/storage";
+import { PushToggle } from "./push-toggle";
 import type { TodayReading } from "@/lib/today";
 
 const WEEKDAYS = ["일", "월", "화", "수", "목", "금", "토"];
@@ -95,6 +96,7 @@ export function CalendarApp({ today }: { today: string }) {
       <DayDetail key={selected} date={selected} day={journal[selected]} today={today} />
       <MonthStats days={daysInMonth(journal, year, month)} month={month} />
       <Badges journal={journal} today={today} />
+      <PushToggle />
       <BackupPanel today={today} />
     </div>
   );

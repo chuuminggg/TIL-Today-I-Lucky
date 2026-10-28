@@ -140,6 +140,7 @@ export function CompatResultView({ detail, onRetry }: { detail: CompatDetail; on
       </section>
 
       <AskAi
+        source="compat"
         prompts={prompts}
         description="두 사람의 명식과 궁합 분석을 담은 프롬프트를 만들어 두었어요. 대화법까지 이어서 물어보세요."
         notice="생년월일시는 빼고 닉네임과 계산된 간지만 선택한 AI 서비스로 전달돼요."
